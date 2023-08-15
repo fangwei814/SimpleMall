@@ -8,10 +8,21 @@
         <outputRelativeToContentRoot value="true" />
         <module name="simplemall-member" />
         <module name="simplemall-product" />
+        <module name="renren-fast" />
         <module name="simplemall-coupon" />
         <module name="simplemall-order" />
         <module name="simplemall-ware" />
       </profile>
     </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="renren-fast" options="-parameters" />
+      <module name="simplemall-coupon" options="-parameters" />
+      <module name="simplemall-member" options="-parameters" />
+      <module name="simplemall-order" options="-parameters" />
+      <module name="simplemall-product" options="-parameters" />
+      <module name="simplemall-ware" options="-parameters" />
+    </option>
   </component>
 </project>

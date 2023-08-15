@@ -14,5 +14,6 @@
 		<module>simplemall-order</module>
 		<module>simplemall-ware</module>
 		<module>simplemall-member</module>
+		<module>renren-fast</module>
 	</modules>
 </project>
