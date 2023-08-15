@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.fangw</groupId>
-	<artifactId>simplemall-product</artifactId>
+	<artifactId>simplemall-order</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>simplemall-product</name>
-	<description>simplemall-product</description>
+	<name>simplemall-order</name>
+	<description>simplemall-order</description>
 	<properties>
 		<java.version>1.8</java.version>
 		<spring-cloud.version>2021.0.8</spring-cloud.version>
