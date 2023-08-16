@@ -1,10 +1,10 @@
-package com.fangw.simplemall.ware;
+package com.fangw.simplemall.order;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SimplemallWareApplicationTests {
+class SimplemallOrderApplicationTests {
 
 	@Test
 	void contextLoads() {

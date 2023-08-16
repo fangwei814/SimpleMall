@@ -3,7 +3,6 @@ package com.fangw.simplemall.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ import com.fangw.common.utils.R;
  *
  * @author fangw
  * @email 1779219498@qq.com
- * @date 2023-08-16 00:07:40
+ * @date 2023-08-16 19:26:46
  */
 @RestController
 @RequestMapping("product/spuimages")
@@ -35,7 +34,7 @@ public class SpuImagesController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("product:spuimages:list")
+    // @RequiresPermissions("product:spuimages:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = spuImagesService.queryPage(params);
 
@@ -47,7 +46,7 @@ public class SpuImagesController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("product:spuimages:info")
+    // @RequiresPermissions("product:spuimages:info")
     public R info(@PathVariable("id") Long id){
 		SpuImagesEntity spuImages = spuImagesService.getById(id);
 
@@ -58,7 +57,7 @@ public class SpuImagesController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("product:spuimages:save")
+    // @RequiresPermissions("product:spuimages:save")
     public R save(@RequestBody SpuImagesEntity spuImages){
 		spuImagesService.save(spuImages);
 
@@ -69,7 +68,7 @@ public class SpuImagesController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("product:spuimages:update")
+    // @RequiresPermissions("product:spuimages:update")
     public R update(@RequestBody SpuImagesEntity spuImages){
 		spuImagesService.updateById(spuImages);
 
@@ -80,7 +79,7 @@ public class SpuImagesController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("product:spuimages:delete")
+    // @RequiresPermissions("product:spuimages:delete")
     public R delete(@RequestBody Long[] ids){
 		spuImagesService.removeByIds(Arrays.asList(ids));
 
