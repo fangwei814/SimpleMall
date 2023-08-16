@@ -1,4 +1,4 @@
-package com.fangw.simplemall.product;
+package com.fangw.simplemall.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
