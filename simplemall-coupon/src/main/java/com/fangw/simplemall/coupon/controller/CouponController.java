@@ -4,11 +4,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.*;
 
 import com.fangw.simplemall.coupon.entity.CouponEntity;
 import com.fangw.simplemall.coupon.service.CouponService;
@@ -24,11 +22,22 @@ import com.fangw.common.utils.R;
  * @email 1779219498@qq.com
  * @date 2023-08-16 20:19:07
  */
+@RefreshScope
 @RestController
 @RequestMapping("coupon/coupon")
 public class CouponController {
+
+    @Value("${myuser.name}")
+    private String userName;
+    @Value("${myuser.age}")
+    private int userAge;
     @Autowired
     private CouponService couponService;
+
+    @GetMapping("/test")
+    public R test() {
+        return R.ok().put("user", userName).put("age", userAge);
+    }
 
     @RequestMapping("/member/list")
     public R memberCoupons(@RequestParam Map<String, Object> params){
