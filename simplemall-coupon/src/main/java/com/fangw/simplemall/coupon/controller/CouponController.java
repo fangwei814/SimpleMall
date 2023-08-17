@@ -30,6 +30,13 @@ public class CouponController {
     @Autowired
     private CouponService couponService;
 
+    @RequestMapping("/member/list")
+    public R memberCoupons(@RequestParam Map<String, Object> params){
+        CouponEntity couponEntity = new CouponEntity();
+        couponEntity.setCouponName("满1000-999");
+        return R.ok().put("coupons", Arrays.asList(couponEntity));
+    }
+
     /**
      * 列表
      */
