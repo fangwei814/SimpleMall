@@ -12,6 +12,7 @@
         <module name="simplemall-order" />
         <module name="simplemall-ware" />
         <module name="renren-fast" />
+        <module name="simplemall-gateway" />
         <module name="simplemall-coupon" />
         <module name="renren-generator" />
         <module name="simplemall-common" />
@@ -26,6 +27,7 @@
       <module name="renren-fast" options="-parameters" />
       <module name="renren-generator" options="-parameters" />
       <module name="simplemall-coupon" options="-parameters" />
+      <module name="simplemall-gateway" options="-parameters" />
       <module name="simplemall-member" options="-parameters" />
       <module name="simplemall-order" options="-parameters" />
       <module name="simplemall-product" options="-parameters" />

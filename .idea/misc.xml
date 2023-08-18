@@ -3,12 +3,14 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/com.fangw.simplemall.member" />
+    <file type="web" url="file://$PROJECT_DIR$/simplemall-gateway" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/coupon/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/simplemall-gateway/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
