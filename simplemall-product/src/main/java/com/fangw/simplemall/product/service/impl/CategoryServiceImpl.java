@@ -1,5 +1,6 @@
 package com.fangw.simplemall.product.service.impl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,10 +37,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // 如果父id为0表示是一级分类
         return allList.stream().filter(item -> item.getParentCid() == 0).peek(item -> {
             item.setChildren(getChildren(item, allList));
-        }).sorted((menu1, menu2) -> {
-            return (Objects.isNull(menu1.getSort()) ? 0 : menu1.getSort())
-                - (Objects.isNull(menu2.getSort()) ? 0 : menu2.getSort());
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparingInt(menu -> (Objects.isNull(menu.getSort()) ? 0 : menu.getSort())))
+            .collect(Collectors.toList());
     }
 
     private List<CategoryEntity> getChildren(CategoryEntity cur, List<CategoryEntity> allList) {
@@ -50,10 +49,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         }).peek(item -> {
             // 递归调用每一层，形成树结构
             item.setChildren(getChildren(item, allList));
-        }).sorted((menu1, menu2) -> {
-            // 注意递归底部会有空指针，需要判断
-            return (Objects.isNull(menu1.getSort()) ? 0 : menu1.getSort())
-                - (Objects.isNull(menu2.getSort()) ? 0 : menu2.getSort());
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparingInt(menu -> (Objects.isNull(menu.getSort()) ? 0 : menu.getSort())))
+            .collect(Collectors.toList());
     }
 }
