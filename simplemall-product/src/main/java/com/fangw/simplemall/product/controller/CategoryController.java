@@ -1,14 +1,11 @@
 package com.fangw.simplemall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fangw.simplemall.product.entity.CategoryEntity;
 import com.fangw.simplemall.product.service.CategoryService;
@@ -29,6 +26,19 @@ import com.fangw.common.utils.R;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+    /**
+     * 用树形结构展示多级分类
+     *
+     * @return
+     */
+    @GetMapping("/list/tree")
+    public R list() {
+        // 查询得到结果，然后返回
+        List<CategoryEntity> categoryEntities = categoryService.listWithTree();
+
+        return R.ok().put("data", categoryEntities);
+    }
 
     /**
      * 列表

@@ -18,5 +18,6 @@
 		<module>simplemall-common</module>
 		<module>renren-fast</module>
 		<module>renren-generator</module>
+		<module>simplemall-gateway</module>
 	</modules>
 </project>
