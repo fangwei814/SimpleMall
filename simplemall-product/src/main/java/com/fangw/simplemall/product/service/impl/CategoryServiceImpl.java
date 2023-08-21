@@ -41,6 +41,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             .collect(Collectors.toList());
     }
 
+    @Override
+    public void removeMenuByIds(List<Long> list) {
+        // todo:这边还没有判断被哪些引用
+
+        baseMapper.deleteBatchIds(list);
+    }
+
     private List<CategoryEntity> getChildren(CategoryEntity cur, List<CategoryEntity> allList) {
         // 对传入的cur，找到他的所有孩子，形成多维数组
         return allList.stream().filter(item -> {

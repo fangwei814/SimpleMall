@@ -13,6 +13,7 @@
         <module name="simplemall-ware" />
         <module name="renren-fast" />
         <module name="simplemall-gateway" />
+        <module name="simplemall-third-party" />
         <module name="simplemall-coupon" />
         <module name="renren-generator" />
         <module name="simplemall-common" />
@@ -31,6 +32,7 @@
       <module name="simplemall-member" options="-parameters" />
       <module name="simplemall-order" options="-parameters" />
       <module name="simplemall-product" options="-parameters" />
+      <module name="simplemall-third-party" options="-parameters" />
       <module name="simplemall-ware" options="-parameters" />
     </option>
   </component>

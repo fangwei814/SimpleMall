@@ -1,11 +1,11 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.CategoryEntity;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 商品三级分类
@@ -19,11 +19,16 @@ public interface CategoryService extends IService<CategoryEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     /**
-     * 用树形结构展示全部分类
-     * 本质上是一次全表查询
+     * 用树形结构展示全部分类 本质上是一次全表查询
      *
      * @return
      */
     List<CategoryEntity> listWithTree();
-}
 
+    /**
+     * 删除菜单，这边会检查是否被别引用
+     * 
+     * @param list
+     */
+    void removeMenuByIds(List<Long> list);
+}
