@@ -3,19 +3,18 @@ package com.fangw.simplemall.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import javax.validation.Valid;
 
-import com.fangw.simplemall.product.entity.BrandEntity;
-import com.fangw.simplemall.product.service.BrandService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
-
-
+import com.fangw.common.valid.UpdateGroup;
+import com.fangw.common.valid.UpdateStatusGroup;
+import com.fangw.simplemall.product.entity.BrandEntity;
+import com.fangw.simplemall.product.service.BrandService;
 
 /**
  * 品牌
@@ -35,20 +34,19 @@ public class BrandController {
      */
     @RequestMapping("/list")
     // @RequiresPermissions("product:brand:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = brandService.queryPage(params);
 
         return R.ok().put("page", page);
     }
-
 
     /**
      * 信息
      */
     @RequestMapping("/info/{brandId}")
     // @RequiresPermissions("product:brand:info")
-    public R info(@PathVariable("brandId") Long brandId){
-		BrandEntity brand = brandService.getById(brandId);
+    public R info(@PathVariable("brandId") Long brandId) {
+        BrandEntity brand = brandService.getById(brandId);
 
         return R.ok().put("brand", brand);
     }
@@ -56,12 +54,22 @@ public class BrandController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     // @RequiresPermissions("product:brand:save")
-    public R save(@RequestBody BrandEntity brand){
-		brandService.save(brand);
-
+    public R save(@Valid @RequestBody BrandEntity brand/*, BindingResult result*/) {
+        // if (result.hasErrors()) {
+        // // 1.获取校验的错误结果
+        // Map<String, String> map = new HashMap<>();
+        // result.getFieldErrors().forEach(item -> {
+        // String message = item.getDefaultMessage();
+        // String field = item.getField();
+        // map.put(message, field);
+        // });
+        // return R.error(400, "提交的数据不合法").put("data", map);
+        // } else {
+        brandService.save(brand);
         return R.ok();
+        // }
     }
 
     /**
@@ -69,8 +77,18 @@ public class BrandController {
      */
     @RequestMapping("/update")
     // @RequiresPermissions("product:brand:update")
-    public R update(@RequestBody BrandEntity brand){
-		brandService.updateById(brand);
+    public R update(@Validated(UpdateGroup.class) @RequestBody BrandEntity brand) {
+        brandService.updateById(brand);
+
+        return R.ok();
+    }
+
+    /**
+     * 修改状态
+     */
+    @PostMapping("/update/status")
+    public R updateStatus(@Validated(UpdateStatusGroup.class) @RequestBody BrandEntity brand) {
+        brandService.updateById(brand);
 
         return R.ok();
     }
@@ -80,8 +98,8 @@ public class BrandController {
      */
     @RequestMapping("/delete")
     // @RequiresPermissions("product:brand:delete")
-    public R delete(@RequestBody Long[] brandIds){
-		brandService.removeByIds(Arrays.asList(brandIds));
+    public R delete(@RequestBody Long[] brandIds) {
+        brandService.removeByIds(Arrays.asList(brandIds));
 
         return R.ok();
     }
