@@ -1,10 +1,10 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.AttrGroupEntity;
-
-import java.util.Map;
 
 /**
  * 属性分组
@@ -16,5 +16,6 @@ import java.util.Map;
 public interface AttrGroupService extends IService<AttrGroupEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    PageUtils queryPage(Map<String, Object> params, Long catelogId);
+}
