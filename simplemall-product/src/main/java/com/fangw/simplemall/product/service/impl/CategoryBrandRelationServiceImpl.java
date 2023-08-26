@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.utils.PageUtils;
@@ -50,4 +51,23 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         save(entity);
     }
 
+    @Override
+    public void updateBrand(Long brandId, String name) {
+        // 构造更新条件
+        LambdaUpdateWrapper<CategoryBrandRelationEntity> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(CategoryBrandRelationEntity::getBrandId, brandId);
+        wrapper.set(CategoryBrandRelationEntity::getBrandName, name);
+
+        update(wrapper);
+    }
+
+    @Override
+    public void updateCatelog(Long catId, String name) {
+        // 构造更新条件
+        LambdaUpdateWrapper<CategoryBrandRelationEntity> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(CategoryBrandRelationEntity::getCatelogId, catId);
+        wrapper.set(CategoryBrandRelationEntity::getCatelogName, name);
+
+        update(wrapper);
+    }
 }

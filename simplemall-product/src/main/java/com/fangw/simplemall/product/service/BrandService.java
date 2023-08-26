@@ -1,10 +1,10 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.BrandEntity;
-
-import java.util.Map;
 
 /**
  * 品牌
@@ -16,5 +16,11 @@ import java.util.Map;
 public interface BrandService extends IService<BrandEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 级联更新，别的表涉及了brand名字也要同步更新
+     *
+     * @param brand
+     */
+    void updateDetail(BrandEntity brand);
+}

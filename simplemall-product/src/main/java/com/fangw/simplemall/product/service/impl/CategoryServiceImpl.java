@@ -3,7 +3,10 @@ package com.fangw.simplemall.product.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,10 +15,13 @@ import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.Query;
 import com.fangw.simplemall.product.dao.CategoryDao;
 import com.fangw.simplemall.product.entity.CategoryEntity;
+import com.fangw.simplemall.product.service.CategoryBrandRelationService;
 import com.fangw.simplemall.product.service.CategoryService;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+    @Autowired
+    CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -56,6 +62,23 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         // 返回
         return res.toArray(new Long[0]);
+    }
+
+    @Override
+    @Transactional
+    public void updateDetail(CategoryEntity category) {
+        // 更新自己
+        updateById(category);
+
+        // 取出信息
+        Long catId = category.getCatId();
+        String name = category.getName();
+
+        // 更新他表
+        if (StringUtils.isNotBlank(name)) {
+            // todo:其他表
+            categoryBrandRelationService.updateCatelog(catId, name);
+        }
     }
 
     private List<Long> findParentPath(Long catelogId, List<Long> paths) {

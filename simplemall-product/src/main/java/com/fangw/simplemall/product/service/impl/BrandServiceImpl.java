@@ -3,7 +3,9 @@ package com.fangw.simplemall.product.service.impl;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -13,9 +15,12 @@ import com.fangw.common.utils.Query;
 import com.fangw.simplemall.product.dao.BrandDao;
 import com.fangw.simplemall.product.entity.BrandEntity;
 import com.fangw.simplemall.product.service.BrandService;
+import com.fangw.simplemall.product.service.CategoryBrandRelationService;
 
 @Service("brandService")
 public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> implements BrandService {
+    @Autowired
+    CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -29,6 +34,24 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
         IPage<BrandEntity> page = this.page(new Query<BrandEntity>().getPage(params), wrapper);
 
         return new PageUtils(page);
+    }
+
+    @Override
+    @Transactional
+    public void updateDetail(BrandEntity brand) {
+        // 更新自己
+        this.updateById(brand);
+
+        // 取出brand名字信息
+        Long brandId = brand.getBrandId();
+        String name = brand.getName();
+
+        // 更新别的表
+        if (StringUtils.isNotBlank(name)) {
+            categoryBrandRelationService.updateBrand(brandId, name);
+
+            // todo:其他表
+        }
     }
 
 }
