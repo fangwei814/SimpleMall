@@ -1,9 +1,6 @@
 package com.fangw.simplemall.product.service.impl;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -46,6 +43,32 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // todo:这边还没有判断被哪些引用
 
         baseMapper.deleteBatchIds(list);
+    }
+
+    @Override
+    public Long[] findCatelogPath(Long catelogId) {
+        // 递归寻找父亲的id
+        List<Long> res = new ArrayList<>();
+        findParentPath(catelogId, res);
+
+        // 逆序
+        Collections.reverse(res);
+
+        // 返回
+        return res.toArray(new Long[0]);
+    }
+
+    private List<Long> findParentPath(Long catelogId, List<Long> paths) {
+        // 1.将当前节点添加到路径
+        paths.add(catelogId);
+
+        // 2.获取当前节点的父亲
+        CategoryEntity entity = getById(catelogId);
+        if (entity.getParentCid() != 0) {
+            findParentPath(entity.getParentCid(), paths);
+        }
+
+        return paths;
     }
 
     private List<CategoryEntity> getChildren(CategoryEntity cur, List<CategoryEntity> allList) {

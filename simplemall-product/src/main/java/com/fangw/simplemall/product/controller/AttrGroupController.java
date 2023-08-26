@@ -2,14 +2,17 @@ package com.fangw.simplemall.product.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
 import com.fangw.simplemall.product.entity.AttrGroupEntity;
 import com.fangw.simplemall.product.service.AttrGroupService;
+import com.fangw.simplemall.product.service.CategoryService;
 
 /**
  * 属性分组
@@ -23,6 +26,8 @@ import com.fangw.simplemall.product.service.AttrGroupService;
 public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 根据catelogId和key进行分页查询
@@ -34,6 +39,28 @@ public class AttrGroupController {
     @GetMapping("/list/{catelogId}")
     public R listByCatelogId(@RequestParam Map<String, Object> params, @PathVariable Long catelogId) {
         return R.ok().put("data", attrGroupService.queryPage(params, catelogId));
+    }
+
+    /**
+     * 获取属性分组详情
+     * 
+     * @param attrGroupId
+     * @return
+     */
+    @GetMapping("/info/{attrGroupId}")
+    @Transactional
+    public R infoByAttrGroupId(@PathVariable Long attrGroupId) {
+        // 先找到对应的数据
+        AttrGroupEntity groupEntity = attrGroupService.getById(attrGroupId);
+
+        // 然后再找三级分类的路径
+        if (Objects.isNull(groupEntity)) {
+            return R.error("Not find.");
+        }
+        Long[] path = categoryService.findCatelogPath(groupEntity.getCatelogId());
+        groupEntity.setCatelogPath(path);
+
+        return R.ok().put("attrGroup", path);
     }
 
     /**
