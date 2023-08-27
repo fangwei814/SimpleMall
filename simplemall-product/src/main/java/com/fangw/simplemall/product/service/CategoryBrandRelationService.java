@@ -1,9 +1,11 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
+import com.fangw.simplemall.product.entity.BrandEntity;
 import com.fangw.simplemall.product.entity.CategoryBrandRelationEntity;
 
 /**
@@ -39,4 +41,12 @@ public interface CategoryBrandRelationService extends IService<CategoryBrandRela
      * @param name
      */
     void updateCatelog(Long catId, String name);
+
+    /**
+     * 查询分类对应的所有品牌信息
+     * 
+     * @param catId
+     * @return
+     */
+    List<BrandEntity> getBrandsByCatId(Long catId);
 }

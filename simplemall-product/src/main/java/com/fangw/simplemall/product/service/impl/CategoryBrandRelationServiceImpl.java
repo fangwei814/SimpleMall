@@ -1,6 +1,8 @@
 package com.fangw.simplemall.product.service.impl;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,5 +71,18 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         wrapper.set(CategoryBrandRelationEntity::getCatelogName, name);
 
         update(wrapper);
+    }
+
+    @Override
+    public List<BrandEntity> getBrandsByCatId(Long catId) {
+        // 1.先查出所有品牌id
+        List<CategoryBrandRelationEntity> relationEntities = list(new LambdaUpdateWrapper<CategoryBrandRelationEntity>()
+            .eq(CategoryBrandRelationEntity::getCatelogId, catId));
+
+        // 2.查出所有品牌详细信息
+        return relationEntities.stream().map(relationEntity -> {
+            // 查询所有的品牌信息
+            return brandDao.selectById(relationEntity.getBrandId());
+        }).collect(Collectors.toList());
     }
 }
