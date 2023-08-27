@@ -206,11 +206,13 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         if (StringUtils.isNotBlank(catelogId) && !"0".equalsIgnoreCase(catelogId)) {
             wrapper.eq(SpuInfoEntity::getCatalogId, catelogId);
         }
+
         // 3.brandId
         String brandId = (String)params.get("brandId");
         if (StringUtils.isNotBlank(brandId) && !"0".equalsIgnoreCase(brandId)) {
             wrapper.eq(SpuInfoEntity::getBrandId, brandId);
         }
+
         // 4.status
         String status = (String)params.get("status");
         if (StringUtils.isNotBlank(status)) {
