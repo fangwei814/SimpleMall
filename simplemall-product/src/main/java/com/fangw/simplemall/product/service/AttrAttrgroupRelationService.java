@@ -1,10 +1,12 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.AttrAttrgroupRelationEntity;
-
-import java.util.Map;
+import com.fangw.simplemall.product.vo.AttrGroupRelationVo;
 
 /**
  * 属性&属性分组关联
@@ -16,5 +18,11 @@ import java.util.Map;
 public interface AttrAttrgroupRelationService extends IService<AttrAttrgroupRelationEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 批量保存
+     * 
+     * @param vos
+     */
+    void saveBatch(List<AttrGroupRelationVo> vos);
+}

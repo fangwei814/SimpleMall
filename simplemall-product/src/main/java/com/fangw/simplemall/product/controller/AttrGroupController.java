@@ -13,6 +13,7 @@ import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
 import com.fangw.simplemall.product.entity.AttrEntity;
 import com.fangw.simplemall.product.entity.AttrGroupEntity;
+import com.fangw.simplemall.product.service.AttrAttrgroupRelationService;
 import com.fangw.simplemall.product.service.AttrGroupService;
 import com.fangw.simplemall.product.service.AttrService;
 import com.fangw.simplemall.product.service.CategoryService;
@@ -34,6 +35,34 @@ public class AttrGroupController {
     private CategoryService categoryService;
     @Autowired
     private AttrService attrService;
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
+    /**
+     * 添加属性与分组关联关系
+     * 
+     * @param vos
+     * @return
+     */
+    @PostMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> vos) {
+
+        attrAttrgroupRelationService.saveBatch(vos);
+        return R.ok();
+    }
+
+    /**
+     * 获取属性分组没有关联的其他属性
+     * 
+     * @param attrgroupId
+     * @param params
+     * @return
+     */
+    @GetMapping("/{attrgroupId}/noattr/relation")
+    public R attrNoRelation(@PathVariable("attrgroupId") Long attrgroupId, @RequestParam Map<String, Object> params) {
+        PageUtils page = attrService.getNoRelationAttr(params, attrgroupId);
+        return R.ok().put("page", page);
+    }
 
     /**
      * 删除属性与分组的关联关系
