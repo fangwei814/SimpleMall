@@ -1,8 +1,12 @@
 package com.fangw.simplemall.product.dao;
 
-import com.fangw.simplemall.product.entity.AttrAttrgroupRelationEntity;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.fangw.simplemall.product.entity.AttrAttrgroupRelationEntity;
 
 /**
  * 属性&属性分组关联
@@ -13,5 +17,11 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AttrAttrgroupRelationDao extends BaseMapper<AttrAttrgroupRelationEntity> {
-	
+
+    /**
+     * 删除关联关系
+     * 
+     * @param entities
+     */
+    void deleteBatchRelations(@Param("entities") List<AttrAttrgroupRelationEntity> entities);
 }

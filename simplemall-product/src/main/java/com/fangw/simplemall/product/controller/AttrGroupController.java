@@ -1,6 +1,7 @@
 package com.fangw.simplemall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -10,9 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
+import com.fangw.simplemall.product.entity.AttrEntity;
 import com.fangw.simplemall.product.entity.AttrGroupEntity;
 import com.fangw.simplemall.product.service.AttrGroupService;
+import com.fangw.simplemall.product.service.AttrService;
 import com.fangw.simplemall.product.service.CategoryService;
+import com.fangw.simplemall.product.vo.AttrGroupRelationVo;
 
 /**
  * 属性分组
@@ -28,6 +32,34 @@ public class AttrGroupController {
     private AttrGroupService attrGroupService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private AttrService attrService;
+
+    /**
+     * 删除属性与分组的关联关系
+     * 
+     * @param vos
+     *            接受一个我们自定义的vo数组
+     * @return
+     */
+    @PostMapping("/attr/relation/delete")
+    public R deleteRelation(@RequestBody AttrGroupRelationVo[] vos) {
+        attrService.deleteRelation(vos);
+        return R.ok();
+    }
+
+    /**
+     * 获取属性分组的关联的所有属性
+     * 
+     * @param attrgroupId
+     * @return
+     */
+    /// product/attrgroup/{attrgroupId}/attr/relation
+    @GetMapping("/{attrgroupId}/attr/relation")
+    public R attrRelation(@PathVariable("attrgroupId") Long attrgroupId) {
+        List<AttrEntity> entities = attrService.getRelationAttr(attrgroupId);
+        return R.ok().put("data", entities);
+    }
 
     /**
      * 根据catelogId和key进行分页查询

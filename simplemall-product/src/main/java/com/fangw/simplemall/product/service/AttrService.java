@@ -1,10 +1,12 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.AttrEntity;
+import com.fangw.simplemall.product.vo.AttrGroupRelationVo;
 import com.fangw.simplemall.product.vo.AttrRespVo;
 import com.fangw.simplemall.product.vo.AttrVo;
 
@@ -50,4 +52,19 @@ public interface AttrService extends IService<AttrEntity> {
      * @param attr
      */
     void updateAttr(AttrVo attr);
+
+    /**
+     * 获取属性分组关联的所有属性
+     * 
+     * @param attrgroupId
+     * @return
+     */
+    List<AttrEntity> getRelationAttr(Long attrgroupId);
+
+    /**
+     * 批量删除属性和属性分组的关联
+     * 
+     * @param vos
+     */
+    void deleteRelation(AttrGroupRelationVo[] vos);
 }

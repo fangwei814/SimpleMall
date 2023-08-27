@@ -1,5 +1,6 @@
 package com.fangw.simplemall.product.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,6 +30,7 @@ import com.fangw.simplemall.product.entity.AttrGroupEntity;
 import com.fangw.simplemall.product.entity.CategoryEntity;
 import com.fangw.simplemall.product.service.AttrService;
 import com.fangw.simplemall.product.service.CategoryService;
+import com.fangw.simplemall.product.vo.AttrGroupRelationVo;
 import com.fangw.simplemall.product.vo.AttrRespVo;
 import com.fangw.simplemall.product.vo.AttrVo;
 
@@ -170,6 +172,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
+    @Transactional
     public void updateAttr(AttrVo attr) {
         // 1.修改基本属性
         AttrEntity attrEntity = new AttrEntity();
@@ -193,6 +196,39 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                 attrAttrgroupRelationDao.insert(relationEntity);
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public List<AttrEntity> getRelationAttr(Long attrgroupId) {
+        // 1.在关联表中查出所有对应于该分组的属性id
+        LambdaUpdateWrapper<AttrAttrgroupRelationEntity> relationWrapper = new LambdaUpdateWrapper<>();
+        relationWrapper.eq(AttrAttrgroupRelationEntity::getAttrGroupId, attrgroupId);
+        List<AttrAttrgroupRelationEntity> relationEntities = attrAttrgroupRelationDao.selectList(relationWrapper);
+
+        // 2.循环查找每一个属性entity
+        List<Long> attrIds =
+            relationEntities.stream().map(AttrAttrgroupRelationEntity::getAttrId).collect(Collectors.toList());
+
+        if (Objects.isNull(attrIds) || attrIds.isEmpty()) {
+            return null;
+        }
+
+        return listByIds(attrIds);
+    }
+
+    @Override
+    @Transactional
+    public void deleteRelation(AttrGroupRelationVo[] vos) {
+        // 1.转为entity
+        List<AttrAttrgroupRelationEntity> collect = Arrays.stream(vos).map(vo -> {
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+            BeanUtils.copyProperties(vo, relationEntity);
+            return relationEntity;
+        }).collect(Collectors.toList());
+
+        // 2.批量删除
+        attrAttrgroupRelationDao.deleteBatchRelations(collect);
     }
 
 }
