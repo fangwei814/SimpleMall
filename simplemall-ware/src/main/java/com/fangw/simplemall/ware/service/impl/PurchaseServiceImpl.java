@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -46,6 +47,7 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
     }
 
     @Override
+    @Transactional
     public void mergePurchase(MergeVo mergeVo) {
         // 1.获取采购单id
         Long purchaseId = mergeVo.getPurchaseId();
@@ -64,6 +66,8 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
             // 获取id
             purchaseId = purchase.getId();
         }
+
+        // todo: 确认采购单状态是0,1才可以合并
 
         // 2.更新采购需求对应的采购单id
         Long finalPurchaseId = purchaseId;
@@ -86,6 +90,41 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
         purchaseEntity.setId(purchaseId);
         purchaseEntity.setUpdateTime(new Date());
         this.updateById(purchaseEntity);
+    }
+
+    @Override
+    @Transactional
+    public void received(List<Long> ids) {
+        // 1.改变采购单的状态为派出
+        List<PurchaseEntity> collect = ids.stream().map(this::getById).filter(item -> {
+            // 过滤实体
+            // 主要是采购单的状态要是新建或者已分配
+            return item.getStatus() == WareConstant.PurchaseStatusEnum.CREATED.getCode()
+                || item.getStatus() == WareConstant.PurchaseStatusEnum.ASSIGNED.getCode();
+        }).peek(item -> {
+            // 更新状态
+            item.setStatus(WareConstant.PurchaseStatusEnum.RECEIVE.getCode());
+            item.setUpdateTime(new Date());
+        }).collect(Collectors.toList());
+
+        // 更新
+        // todo: collect是否要判空
+        updateBatchById(collect);
+
+        // 2.改变采购单中每个采购需求的状态
+        collect.forEach(item -> {
+            // 查询每一个采购需求
+            List<PurchaseDetailEntity> entities = purchaseDetailService.listDetailByPurchseId(item.getId());
+            List<PurchaseDetailEntity> collect1 = entities.stream().map(entity -> {
+                // 重新设置
+                PurchaseDetailEntity entity1 = new PurchaseDetailEntity();
+                entity1.setId(entity.getId());
+                entity1.setStatus(WareConstant.PurchaseDetailStatusEnum.BUYING.getCode());
+                return entity1;
+            }).collect(Collectors.toList());
+
+            purchaseDetailService.updateBatchById(collect1);
+        });
     }
 
 }

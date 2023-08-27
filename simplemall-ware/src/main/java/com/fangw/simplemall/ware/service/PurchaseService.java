@@ -1,5 +1,6 @@
 package com.fangw.simplemall.ware.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -26,4 +27,11 @@ public interface PurchaseService extends IService<PurchaseEntity> {
      * @param mergeVo
      */
     void mergePurchase(MergeVo mergeVo);
+
+    /**
+     * 领取采购单
+     * 
+     * @param ids
+     */
+    void received(List<Long> ids);
 }
