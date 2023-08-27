@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -179,6 +180,45 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Override
     public void saveBaseSpuInfo(SpuInfoEntity infoEntity) {
         baseMapper.insert(infoEntity);
+    }
+
+    @Override
+    public PageUtils queryPageByCondition(Map<String, Object> params) {
+        /*
+         * 要利用的
+         * key: '华为',//检索关键字
+            catelogId: 6,//三级分类id
+            brandId: 1,//品牌id
+            status: 0,//商品状态
+         */
+        LambdaQueryWrapper<SpuInfoEntity> wrapper = new LambdaQueryWrapper<>();
+
+        // 1.key
+        String key = (String)params.get("key");
+        if (StringUtils.isNotBlank(key)) {
+            wrapper.and(obj -> {
+                obj.eq(SpuInfoEntity::getId, key).or().like(SpuInfoEntity::getSpuName, key);
+            });
+        }
+
+        // 2.catelogId
+        String catelogId = (String)params.get("catelogId");
+        if (StringUtils.isNotBlank(catelogId) && !"0".equalsIgnoreCase(catelogId)) {
+            wrapper.eq(SpuInfoEntity::getCatalogId, catelogId);
+        }
+        // 3.brandId
+        String brandId = (String)params.get("brandId");
+        if (StringUtils.isNotBlank(brandId) && !"0".equalsIgnoreCase(brandId)) {
+            wrapper.eq(SpuInfoEntity::getBrandId, brandId);
+        }
+        // 4.status
+        String status = (String)params.get("status");
+        if (StringUtils.isNotBlank(status)) {
+            wrapper.eq(SpuInfoEntity::getPublishStatus, status);
+        }
+
+        IPage<SpuInfoEntity> page = page(new Query<SpuInfoEntity>().getPage(params), wrapper);
+        return new PageUtils(page);
     }
 
 }
