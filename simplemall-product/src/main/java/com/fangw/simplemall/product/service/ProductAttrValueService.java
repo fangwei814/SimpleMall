@@ -1,10 +1,11 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.ProductAttrValueEntity;
-
-import java.util.Map;
 
 /**
  * spu属性值
@@ -16,5 +17,11 @@ import java.util.Map;
 public interface ProductAttrValueService extends IService<ProductAttrValueEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 保存商品属性
+     * 
+     * @param collect
+     */
+    void saveProductAttr(List<ProductAttrValueEntity> collect);
+}

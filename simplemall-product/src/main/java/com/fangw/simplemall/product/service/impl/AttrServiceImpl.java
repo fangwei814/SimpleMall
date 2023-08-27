@@ -70,7 +70,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    @Transactional
     public PageUtils queryBaseAttrPage(Map<String, Object> params, String attrType, Long catelogId) {
         // 1.先分页查询当前符合条件的所有
         LambdaQueryWrapper<AttrEntity> attrWrapper = new LambdaQueryWrapper<>();
@@ -133,7 +132,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    @Transactional
     public AttrRespVo getDetail(Long attrId) {
         // 1.查询属性
         AttrEntity attrEntity = getById(attrId);
@@ -199,7 +197,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    @Transactional
     public List<AttrEntity> getRelationAttr(Long attrgroupId) {
         // 1.在关联表中查出所有对应于该分组的属性id
         LambdaUpdateWrapper<AttrAttrgroupRelationEntity> relationWrapper = new LambdaUpdateWrapper<>();
@@ -232,7 +229,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    @Transactional
     public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrGroupId) {
         // 1.获取分类信息，因为当前分组只能关联所属分类下的所有属性
         AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrGroupId);
