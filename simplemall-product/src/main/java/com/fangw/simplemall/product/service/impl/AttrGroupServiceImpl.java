@@ -1,9 +1,14 @@
 package com.fangw.simplemall.product.service.impl;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,11 +17,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.Query;
 import com.fangw.simplemall.product.dao.AttrGroupDao;
+import com.fangw.simplemall.product.entity.AttrEntity;
 import com.fangw.simplemall.product.entity.AttrGroupEntity;
 import com.fangw.simplemall.product.service.AttrGroupService;
+import com.fangw.simplemall.product.service.AttrService;
+import com.fangw.simplemall.product.vo.AttrGroupWithAttrsVo;
 
 @Service("attrGroupService")
 public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEntity> implements AttrGroupService {
+    @Autowired
+    AttrService attrService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -52,6 +62,26 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             // 封装
             return new PageUtils(page);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<AttrGroupWithAttrsVo> getAttrGroupWithAttrsByCatelogId(Long catelogId) {
+        // 1.查询所有的属性分组
+        List<AttrGroupEntity> groupEntities =
+            list(new LambdaQueryWrapper<AttrGroupEntity>().eq(AttrGroupEntity::getCatelogId, catelogId));
+
+        // 2.封装vo
+        return groupEntities.stream().map(attrGroupEntity -> {
+            // 查询属性
+            List<AttrEntity> attrList = attrService.getRelationAttr(attrGroupEntity.getAttrGroupId());
+
+            // vo
+            AttrGroupWithAttrsVo attrGroupWithAttrsVo = new AttrGroupWithAttrsVo();
+            BeanUtils.copyProperties(attrGroupEntity, attrGroupWithAttrsVo);
+            attrGroupWithAttrsVo.setAttrs(attrList);
+            return attrGroupWithAttrsVo;
+        }).collect(Collectors.toList());
     }
 
 }
