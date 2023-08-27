@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
-import com.fangw.simplemall.product.entity.AttrEntity;
 import com.fangw.simplemall.product.service.AttrService;
+import com.fangw.simplemall.product.vo.AttrRespVo;
 import com.fangw.simplemall.product.vo.AttrVo;
 
 /**
@@ -46,10 +46,9 @@ public class AttrController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{attrId}")
-    // @RequiresPermissions("product:attr:info")
+    @GetMapping("/info/{attrId}")
     public R info(@PathVariable("attrId") Long attrId) {
-        AttrEntity attr = attrService.getById(attrId);
+        AttrRespVo attr = attrService.getDetail(attrId);
 
         return R.ok().put("attr", attr);
     }
@@ -58,7 +57,6 @@ public class AttrController {
      * 保存
      */
     @PostMapping("/save")
-    // @RequiresPermissions("product:attr:save")
     public R save(@RequestBody AttrVo attr) {
         attrService.saveAttr(attr);
 
@@ -68,10 +66,9 @@ public class AttrController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
-    // @RequiresPermissions("product:attr:update")
-    public R update(@RequestBody AttrEntity attr) {
-        attrService.updateById(attr);
+    @PostMapping("/update")
+    public R update(@RequestBody AttrVo attr) {
+        attrService.updateAttr(attr);
 
         return R.ok();
     }

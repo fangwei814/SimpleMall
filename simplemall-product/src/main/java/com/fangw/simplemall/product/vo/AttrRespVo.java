@@ -9,5 +9,9 @@ public class AttrRespVo extends AttrVo {
      */
     private String catelogName;
     private String groupName;
+
+    /**
+     * 分类的多级路径
+     */
     private Long[] catelogPath;
 }
