@@ -70,7 +70,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    @Transactional
     public PageUtils queryBaseAttrPage(Map<String, Object> params, String attrType, Long catelogId) {
         // 1.先分页查询当前符合条件的所有
         LambdaQueryWrapper<AttrEntity> attrWrapper = new LambdaQueryWrapper<>();
@@ -133,7 +132,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    @Transactional
     public AttrRespVo getDetail(Long attrId) {
         // 1.查询属性
         AttrEntity attrEntity = getById(attrId);
@@ -199,7 +197,6 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    @Transactional
     public List<AttrEntity> getRelationAttr(Long attrgroupId) {
         // 1.在关联表中查出所有对应于该分组的属性id
         LambdaUpdateWrapper<AttrAttrgroupRelationEntity> relationWrapper = new LambdaUpdateWrapper<>();
@@ -229,6 +226,45 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
         // 2.批量删除
         attrAttrgroupRelationDao.deleteBatchRelations(collect);
+    }
+
+    @Override
+    public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrGroupId) {
+        // 1.获取分类信息，因为当前分组只能关联所属分类下的所有属性
+        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrGroupId);
+        Long catelogId = attrGroupEntity.getCatelogId();
+
+        // 2.获取分类下所有分组
+        LambdaUpdateWrapper<AttrGroupEntity> groupWrapper = new LambdaUpdateWrapper<>();
+        groupWrapper.eq(AttrGroupEntity::getCatelogId, catelogId);
+        List<AttrGroupEntity> attrGroupEntities = attrGroupDao.selectList(groupWrapper);
+        // 取出所有id
+        List<Long> groupIds =
+            attrGroupEntities.stream().map(AttrGroupEntity::getAttrGroupId).collect(Collectors.toList());
+
+        // 3.获取2中分组关联的所有属性id，只能关联别人没关联过的属性
+        // 查询分组和属性关联表
+        LambdaQueryWrapper<AttrAttrgroupRelationEntity> relationWrapper = new LambdaQueryWrapper<>();
+        relationWrapper.in(AttrAttrgroupRelationEntity::getAttrGroupId, groupIds);
+        List<AttrAttrgroupRelationEntity> relationEntities = attrAttrgroupRelationDao.selectList(relationWrapper);
+        List<Long> attrIds =
+            relationEntities.stream().map(AttrAttrgroupRelationEntity::getAttrId).collect(Collectors.toList());
+
+        // 4.查询当前分类下所有attr，并排除3中attr
+        LambdaQueryWrapper<AttrEntity> attrWrapper = new LambdaQueryWrapper<>();
+        if (Objects.nonNull(attrIds) && !attrIds.isEmpty()) {
+            attrWrapper.notIn(AttrEntity::getAttrId, attrIds);
+        }
+        attrWrapper.eq(AttrEntity::getCatelogId, catelogId).eq(AttrEntity::getAttrType,
+            ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
+        String key = (String)params.get("key");
+        if (StringUtils.isNotBlank(key)) {
+            attrWrapper.and((w) -> {
+                w.eq(AttrEntity::getAttrId, key).or().like(AttrEntity::getAttrName, key);
+            });
+        }
+        IPage<AttrEntity> page = page(new Query<AttrEntity>().getPage(params), attrWrapper);
+        return new PageUtils(page);
     }
 
 }

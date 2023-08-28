@@ -1,10 +1,10 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.SpuInfoDescEntity;
-
-import java.util.Map;
 
 /**
  * spu信息介绍
@@ -16,5 +16,11 @@ import java.util.Map;
 public interface SpuInfoDescService extends IService<SpuInfoDescEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 保存SPU的描述图片信息
+     * 
+     * @param descEntity
+     */
+    void saveSpuInfoDesc(SpuInfoDescEntity descEntity);
+}

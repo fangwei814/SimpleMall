@@ -1,6 +1,7 @@
 package com.fangw.simplemall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
+import com.fangw.simplemall.product.entity.ProductAttrValueEntity;
 import com.fangw.simplemall.product.service.AttrService;
+import com.fangw.simplemall.product.service.ProductAttrValueService;
 import com.fangw.simplemall.product.vo.AttrRespVo;
 import com.fangw.simplemall.product.vo.AttrVo;
 
@@ -24,7 +27,46 @@ import com.fangw.simplemall.product.vo.AttrVo;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
 
+    /**
+     * 更新spu属性
+     * 
+     * @param spuId
+     * @param entities
+     * @return
+     */
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId") Long spuId, @RequestBody List<ProductAttrValueEntity> entities) {
+
+        productAttrValueService.updateSpuAttr(spuId, entities);
+
+        return R.ok();
+    }
+
+    /**
+     * 获取spu属性
+     * 
+     * @param spuId
+     * @return
+     */
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrlistforspu(@PathVariable("spuId") Long spuId) {
+
+        List<ProductAttrValueEntity> entities = productAttrValueService.baseAttrlistforspu(spuId);
+
+        return R.ok().put("data", entities);
+    }
+
+    /**
+     * 查询分类有哪些属性
+     * 
+     * @param params
+     * @param attrType
+     * @param catelogId
+     * @return
+     */
     @GetMapping("/{attrType}/list/{catelogId}")
     public R baseAttrList(@RequestParam Map<String, Object> params, @PathVariable("attrType") String attrType,
         @PathVariable("catelogId") Long catelogId) {

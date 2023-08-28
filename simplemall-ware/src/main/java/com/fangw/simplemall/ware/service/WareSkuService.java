@@ -1,10 +1,10 @@
 package com.fangw.simplemall.ware.service;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.ware.entity.WareSkuEntity;
-
-import java.util.Map;
 
 /**
  * 商品库存
@@ -16,5 +16,13 @@ import java.util.Map;
 public interface WareSkuService extends IService<WareSkuEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 商品入库
+     * 
+     * @param skuId
+     * @param wareId
+     * @param skuNum
+     */
+    void addStock(Long skuId, Long wareId, Integer skuNum);
+}

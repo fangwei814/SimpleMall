@@ -1,10 +1,11 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.SkuImagesEntity;
-
-import java.util.Map;
 
 /**
  * sku图片
@@ -16,5 +17,12 @@ import java.util.Map;
 public interface SkuImagesService extends IService<SkuImagesEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 保存所有图片
+     * 
+     * @param id
+     * @param images
+     */
+    void saveImages(Long id, List<String> images);
+}

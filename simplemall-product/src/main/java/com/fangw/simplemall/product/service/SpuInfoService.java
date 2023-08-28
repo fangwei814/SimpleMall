@@ -1,10 +1,11 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.SpuInfoEntity;
-
-import java.util.Map;
+import com.fangw.simplemall.product.vo.SpuSaveVo;
 
 /**
  * spu信息
@@ -16,5 +17,26 @@ import java.util.Map;
 public interface SpuInfoService extends IService<SpuInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 保存SPU基本信息
+     * 
+     * @param spuInfo
+     */
+    void saveSpuInfo(SpuSaveVo spuInfo);
+
+    /**
+     * 保存
+     * 
+     * @param infoEntity
+     */
+    void saveBaseSpuInfo(SpuInfoEntity infoEntity);
+
+    /**
+     * 利用params里的属性
+     * 
+     * @param params
+     * @return
+     */
+    PageUtils queryPageByCondition(Map<String, Object> params);
+}

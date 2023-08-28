@@ -1,10 +1,10 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.SkuInfoEntity;
-
-import java.util.Map;
 
 /**
  * sku信息
@@ -16,5 +16,14 @@ import java.util.Map;
 public interface SkuInfoService extends IService<SkuInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    void saveSkuInfo(SkuInfoEntity skuInfoEntity);
+
+    /**
+     * 带条件
+     * 
+     * @param params
+     * @return
+     */
+    PageUtils queryPageByCondition(Map<String, Object> params);
+}

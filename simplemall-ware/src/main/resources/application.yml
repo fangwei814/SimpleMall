@@ -20,3 +20,6 @@ mybatis-plus:
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 server:
   port: 11000
+logging:
+  level:
+    com.fangw.simplemall: debug
