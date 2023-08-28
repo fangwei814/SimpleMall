@@ -12,6 +12,7 @@ import com.fangw.common.utils.R;
 import com.fangw.simplemall.ware.entity.PurchaseEntity;
 import com.fangw.simplemall.ware.service.PurchaseService;
 import com.fangw.simplemall.ware.vo.MergeVo;
+import com.fangw.simplemall.ware.vo.PurchaseDoneVo;
 
 /**
  * 采购信息
@@ -25,6 +26,16 @@ import com.fangw.simplemall.ware.vo.MergeVo;
 public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
+
+    /// ware/purchase/done
+    // 完成采购接口
+    @PostMapping("/done")
+    public R finish(@RequestBody PurchaseDoneVo doneVo) {
+
+        purchaseService.done(doneVo);
+
+        return R.ok();
+    }
 
     /**
      * 领取采购单

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.ware.entity.PurchaseEntity;
 import com.fangw.simplemall.ware.vo.MergeVo;
+import com.fangw.simplemall.ware.vo.PurchaseDoneVo;
 
 /**
  * 采购信息
@@ -34,4 +35,11 @@ public interface PurchaseService extends IService<PurchaseEntity> {
      * @param ids
      */
     void received(List<Long> ids);
+
+    /**
+     * 完成采购单
+     * 
+     * @param doneVo
+     */
+    void done(PurchaseDoneVo doneVo);
 }
