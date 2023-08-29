@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -39,6 +40,7 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
     }
 
     @Override
+    @Transactional
     public void updateSpuAttr(Long spuId, List<ProductAttrValueEntity> entities) {
         // 1、删除这个spuId之前对应的所有属性
         this.baseMapper.delete(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId));

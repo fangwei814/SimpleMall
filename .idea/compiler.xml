@@ -11,6 +11,7 @@
         <module name="simplemall-product" />
         <module name="simplemall-order" />
         <module name="simplemall-ware" />
+        <module name="simplemall-search" />
         <module name="renren-fast" />
         <module name="simplemall-gateway" />
         <module name="simplemall-third-party" />
@@ -32,6 +33,7 @@
       <module name="simplemall-member" options="-parameters" />
       <module name="simplemall-order" options="-parameters" />
       <module name="simplemall-product" options="-parameters" />
+      <module name="simplemall-search" options="-parameters" />
       <module name="simplemall-third-party" options="-parameters" />
       <module name="simplemall-ware" options="-parameters" />
     </option>
