@@ -1,5 +1,6 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -26,4 +27,12 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
      * @return
      */
     PageUtils queryPageByCondition(Map<String, Object> params);
+
+    /**
+     * 查询spuId对应的所有sku
+     * 
+     * @param spuId
+     * @return
+     */
+    List<SkuInfoEntity> getSkusBySpuId(Long spuId);
 }

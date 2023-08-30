@@ -1,6 +1,9 @@
 package com.fangw.simplemall.ware.service.impl;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.Query;
 import com.fangw.common.utils.R;
+import com.fangw.common.vo.SkuHasStockVo;
 import com.fangw.simplemall.ware.dao.WareSkuDao;
 import com.fangw.simplemall.ware.entity.WareSkuEntity;
 import com.fangw.simplemall.ware.feign.ProductFeignService;
@@ -21,6 +25,7 @@ import com.fangw.simplemall.ware.service.WareSkuService;
 public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> implements WareSkuService {
     @Autowired
     private WareSkuDao wareSkuDao;
+    @Autowired
     private ProductFeignService productFeignService;
 
     @Override
@@ -72,6 +77,21 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         } else {
             wareSkuDao.addStock(skuId, wareId, skuNum);
         }
+    }
+
+    @Override
+    public List<SkuHasStockVo> getSkusHasStock(List<Long> skuIds) {
+        // 根据skuIds查询总的库存量
+        return skuIds.stream().map(skuId -> {
+            // 每个id查找库存量
+            Long count = baseMapper.getSkuStock(skuId);
+
+            // 设置vo
+            SkuHasStockVo skuHasStockVo = new SkuHasStockVo();
+            skuHasStockVo.setSkuId(skuId);
+            skuHasStockVo.setHasStock(!Objects.isNull(count) && count > 0);
+            return skuHasStockVo;
+        }).collect(Collectors.toList());
     }
 
 }

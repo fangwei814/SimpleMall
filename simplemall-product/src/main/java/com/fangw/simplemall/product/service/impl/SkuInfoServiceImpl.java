@@ -1,6 +1,7 @@
 package com.fangw.simplemall.product.service.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -81,6 +82,11 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
         IPage<SkuInfoEntity> page = page(new Query<SkuInfoEntity>().getPage(params), wrapper);
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<SkuInfoEntity> getSkusBySpuId(Long spuId) {
+        return list(new LambdaQueryWrapper<SkuInfoEntity>().eq(SkuInfoEntity::getSpuId, spuId));
     }
 
 }

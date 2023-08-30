@@ -1,9 +1,11 @@
 package com.fangw.simplemall.ware.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
+import com.fangw.common.vo.SkuHasStockVo;
 import com.fangw.simplemall.ware.entity.WareSkuEntity;
 
 /**
@@ -25,4 +27,12 @@ public interface WareSkuService extends IService<WareSkuEntity> {
      * @param skuNum
      */
     void addStock(Long skuId, Long wareId, Integer skuNum);
+
+    /**
+     * 查询指定的skuIds是否有库存
+     * 
+     * @param skuIds
+     * @return
+     */
+    List<SkuHasStockVo> getSkusHasStock(List<Long> skuIds);
 }
