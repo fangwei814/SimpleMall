@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +18,7 @@ import com.fangw.simplemall.product.dao.CategoryDao;
 import com.fangw.simplemall.product.entity.CategoryEntity;
 import com.fangw.simplemall.product.service.CategoryBrandRelationService;
 import com.fangw.simplemall.product.service.CategoryService;
+import com.fangw.simplemall.product.vo.Catalog2Vo;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
@@ -79,6 +81,57 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             // todo:其他表
             categoryBrandRelationService.updateCatelog(catId, name);
         }
+    }
+
+    @Override
+    public List<CategoryEntity> getLevel1Categorys() {
+        return list(new LambdaQueryWrapper<CategoryEntity>().eq(CategoryEntity::getParentCid, 0));
+    }
+
+    @Override
+    public Map<String, List<Catalog2Vo>> getCatalogJson() {
+        // 1.先找到所有的一级分类
+        List<CategoryEntity> level1Categories =
+            list(new LambdaQueryWrapper<CategoryEntity>().eq(CategoryEntity::getParentCid, 0));
+
+        // 2.每个一级分类找到所有的二级分类
+        Map<String, List<Catalog2Vo>> res =
+            level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+                // 每一个一级分类，查到这个一级分类的所有二级分类
+                List<CategoryEntity> level2Categories =
+                    list(new LambdaQueryWrapper<CategoryEntity>().eq(CategoryEntity::getParentCid, v.getCatId()));
+
+                // 封装上面的结果
+                List<Catalog2Vo> catalog2Vos = null;
+
+                if (Objects.nonNull(level2Categories)) {
+                    catalog2Vos = level2Categories.stream().map(l2 -> {
+                        Catalog2Vo catalog2Vo =
+                            new Catalog2Vo(v.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+
+                        // 找3级分类
+                        List<CategoryEntity> level3Categories = list(
+                            new LambdaQueryWrapper<CategoryEntity>().eq(CategoryEntity::getParentCid, l2.getCatId()));
+                        if (Objects.nonNull(level3Categories)) {
+                            List<Catalog2Vo.Catelog3Vo> collect = level3Categories.stream().map(l3 -> {
+                                // 封装成vo
+                                return new Catalog2Vo.Catelog3Vo(l3.getParentCid().toString(), l3.getCatId().toString(),
+                                    l3.getName());
+                            }).collect(Collectors.toList());
+
+                            // 存储
+                            catalog2Vo.setCatalog3List(collect);
+                        }
+
+                        return catalog2Vo;
+                    }).collect(Collectors.toList());
+                }
+
+                return catalog2Vos;
+            }));
+
+        // 3.每个二级分类找到所有的三级分类
+        return res;
     }
 
     private List<Long> findParentPath(Long catelogId, List<Long> paths) {
