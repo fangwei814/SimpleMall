@@ -1,4 +1,4 @@
-package com.fangw.simplemall.product.controller;
+package com.fangw.simplemall.product.app;
 
 import java.util.Arrays;
 import java.util.List;
