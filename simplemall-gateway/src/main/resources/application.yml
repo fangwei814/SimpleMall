@@ -32,6 +32,10 @@ spring:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}
+        - id: simplemall_host_route
+          uri: lb://simplemall-product
+          predicates:
+            - Host=**.simplemall.com
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
