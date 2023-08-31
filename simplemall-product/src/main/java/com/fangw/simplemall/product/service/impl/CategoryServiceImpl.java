@@ -4,10 +4,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -24,6 +29,10 @@ import com.fangw.simplemall.product.vo.Catalog2Vo;
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
     @Autowired
     CategoryBrandRelationService categoryBrandRelationService;
+    @Autowired
+    StringRedisTemplate redisTemplate;
+    @Autowired
+    RedissonClient redissonClient;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -90,6 +99,35 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
+        // 1.加入缓存逻辑，缓存中存放的数据是json字符串
+        String catalogJson = redisTemplate.opsForValue().get("catalogJSON");
+
+        // 双检加锁
+        if (StringUtils.isEmpty(catalogJson)) {
+            RLock lock = redissonClient.getLock("catalogJson-lock");
+            lock.lock();
+            try {
+                catalogJson = redisTemplate.opsForValue().get("catalogJSON");
+                if (StringUtils.isEmpty(catalogJson)) {
+                    // 2.缓存中没有数据，则查询数据库并保存
+                    Map<String, List<Catalog2Vo>> catalogJsonFromDb = getCatalogJsonFromDb();
+
+                    // 3.查到的数据放入缓存，将查出对象转为json放在缓存中
+                    redisTemplate.opsForValue().set("catalogJSON", JSON.toJSONString(catalogJsonFromDb));
+
+                    return catalogJsonFromDb;
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        // 4.将读到的json字符串转为我们想要的
+        return JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
+    }
+
+    @Override
+    public Map<String, List<Catalog2Vo>> getCatalogJsonFromDb() {
         // 1.先找到所有的一级分类
         List<CategoryEntity> categories = list();
         List<CategoryEntity> level1Categories = getParent_cid(categories, 0L);

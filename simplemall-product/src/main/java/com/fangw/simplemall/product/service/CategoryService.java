@@ -56,9 +56,16 @@ public interface CategoryService extends IService<CategoryEntity> {
     List<CategoryEntity> getLevel1Categorys();
 
     /**
-     * 获取分类vo
+     * 通过redis获取
      * 
      * @return
      */
     Map<String, List<Catalog2Vo>> getCatalogJson();
+
+    /**
+     * 获取分类vo
+     * 
+     * @return
+     */
+    Map<String, List<Catalog2Vo>> getCatalogJsonFromDb();
 }
