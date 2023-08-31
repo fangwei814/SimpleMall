@@ -7,6 +7,8 @@ import org.apache.commons.lang.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +77,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return res.toArray(new Long[0]);
     }
 
+    @CacheEvict(value = "category", allEntries = true)
     @Override
     @Transactional
     public void updateDetail(CategoryEntity category) {
@@ -92,13 +95,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         }
     }
 
+    @Cacheable(value = {"category"}, key = "#root.methodName", sync = true)
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
         return list(new LambdaQueryWrapper<CategoryEntity>().eq(CategoryEntity::getParentCid, 0));
     }
 
     @Override
-    public Map<String, List<Catalog2Vo>> getCatalogJson() {
+    public Map<String, List<Catalog2Vo>> getCatalogJsonFromRedis() {
         // 1.加入缓存逻辑，缓存中存放的数据是json字符串
         String catalogJson = redisTemplate.opsForValue().get("catalogJSON");
 
@@ -110,7 +114,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 catalogJson = redisTemplate.opsForValue().get("catalogJSON");
                 if (StringUtils.isEmpty(catalogJson)) {
                     // 2.缓存中没有数据，则查询数据库并保存
-                    Map<String, List<Catalog2Vo>> catalogJsonFromDb = getCatalogJsonFromDb();
+                    Map<String, List<Catalog2Vo>> catalogJsonFromDb = getCatalogJsonFromDbUsingCache();
 
                     // 3.查到的数据放入缓存，将查出对象转为json放在缓存中
                     redisTemplate.opsForValue().set("catalogJSON", JSON.toJSONString(catalogJsonFromDb));
@@ -126,8 +130,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
     }
 
+    @Cacheable(value = "category", key = "#root.methodName", sync = true)
     @Override
-    public Map<String, List<Catalog2Vo>> getCatalogJsonFromDb() {
+    public Map<String, List<Catalog2Vo>> getCatalogJsonFromDbUsingCache() {
         // 1.先找到所有的一级分类
         List<CategoryEntity> categories = list();
         List<CategoryEntity> level1Categories = getParent_cid(categories, 0L);

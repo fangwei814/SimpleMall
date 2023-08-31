@@ -60,12 +60,12 @@ public interface CategoryService extends IService<CategoryEntity> {
      * 
      * @return
      */
-    Map<String, List<Catalog2Vo>> getCatalogJson();
+    Map<String, List<Catalog2Vo>> getCatalogJsonFromRedis();
 
     /**
      * 获取分类vo
      * 
      * @return
      */
-    Map<String, List<Catalog2Vo>> getCatalogJsonFromDb();
+    Map<String, List<Catalog2Vo>> getCatalogJsonFromDbUsingCache();
 }
