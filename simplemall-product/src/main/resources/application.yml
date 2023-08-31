@@ -12,8 +12,8 @@ spring:
     name: simplemall-product
   thymeleaf:
     cache: false
-  mvc:
-    static-path-pattern: /static/**
+#  mvc:
+#    static-path-pattern: /static/**
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml

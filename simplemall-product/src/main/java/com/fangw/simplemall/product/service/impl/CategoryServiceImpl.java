@@ -91,15 +91,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
         // 1.先找到所有的一级分类
-        List<CategoryEntity> level1Categories =
-            list(new LambdaQueryWrapper<CategoryEntity>().eq(CategoryEntity::getParentCid, 0));
+        List<CategoryEntity> categories = list();
+        List<CategoryEntity> level1Categories = getParent_cid(categories, 0L);
 
         // 2.每个一级分类找到所有的二级分类
         Map<String, List<Catalog2Vo>> res =
             level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
                 // 每一个一级分类，查到这个一级分类的所有二级分类
-                List<CategoryEntity> level2Categories =
-                    list(new LambdaQueryWrapper<CategoryEntity>().eq(CategoryEntity::getParentCid, v.getCatId()));
+                List<CategoryEntity> level2Categories = getParent_cid(categories, v.getParentCid());
 
                 // 封装上面的结果
                 List<Catalog2Vo> catalog2Vos = null;
@@ -110,8 +109,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                             new Catalog2Vo(v.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
 
                         // 找3级分类
-                        List<CategoryEntity> level3Categories = list(
-                            new LambdaQueryWrapper<CategoryEntity>().eq(CategoryEntity::getParentCid, l2.getCatId()));
+                        List<CategoryEntity> level3Categories = getParent_cid(categories, l2.getParentCid());
                         if (Objects.nonNull(level3Categories)) {
                             List<Catalog2Vo.Catelog3Vo> collect = level3Categories.stream().map(l3 -> {
                                 // 封装成vo
@@ -132,6 +130,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         // 3.每个二级分类找到所有的三级分类
         return res;
+    }
+
+    private List<CategoryEntity> getParent_cid(List<CategoryEntity> selectList, Long parent_cid) {
+        return selectList.stream().filter(item -> Objects.equals(item.getParentCid(), parent_cid))
+            .collect(Collectors.toList());
     }
 
     private List<Long> findParentPath(Long catelogId, List<Long> paths) {
