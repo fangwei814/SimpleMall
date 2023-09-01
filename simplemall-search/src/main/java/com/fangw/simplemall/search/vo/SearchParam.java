@@ -23,4 +23,8 @@ public class SearchParam {
     private List<Long> brandId; // 按照品牌进行查询，可以多选
     private List<String> attrs; // 按照属性进行筛选
     private Integer pageNum = 1; // 页码 默认第1页
+    /**
+     * 原生的所有查询条件
+     */
+    private String _queryString;
 }

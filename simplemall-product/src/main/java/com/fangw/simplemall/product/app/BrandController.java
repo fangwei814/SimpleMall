@@ -1,6 +1,7 @@
 package com.fangw.simplemall.product.app;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -28,6 +29,13 @@ import com.fangw.simplemall.product.service.BrandService;
 public class BrandController {
     @Autowired
     private BrandService brandService;
+
+    @GetMapping("/infos")
+    public R info(@RequestParam("brandId") List<Long> brandIds) {
+        List<BrandEntity> brand = brandService.getBrandsByIds(brandIds);
+
+        return R.ok().put("brand", brand);
+    }
 
     /**
      * 列表

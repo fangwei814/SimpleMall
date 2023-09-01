@@ -23,8 +23,20 @@ public class SearchResult {
     private List<BrandVo> brands; // 当前查询到的结果，所有涉及到的品牌
     private List<CatalogVo> ctatLogs; // 当前查询到的结果，所有涉及到的分类
     private List<AttrVo> attrs; // 当前查询到的结果，所有涉及到的属性
+    private List<NavVO> navs; // 面包屑导航
 
     // ==================以上返回给页面的所有信息====================
+
+    /**
+     * 面包屑导航
+     */
+    @Data
+    public static class NavVO {
+        private String navName;
+        private String navValue;
+        private String link;
+    }
+
     /**
      * 品牌
      */
