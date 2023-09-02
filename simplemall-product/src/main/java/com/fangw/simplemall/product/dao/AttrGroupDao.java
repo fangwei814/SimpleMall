@@ -1,8 +1,13 @@
 package com.fangw.simplemall.product.dao;
 
-import com.fangw.simplemall.product.entity.AttrGroupEntity;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.fangw.simplemall.product.entity.AttrGroupEntity;
+import com.fangw.simplemall.product.vo.SpuItemAttrGroupVo;
 
 /**
  * 属性分组
@@ -13,5 +18,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AttrGroupDao extends BaseMapper<AttrGroupEntity> {
-	
+
+    List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(@Param("spuId") Long spuId,
+        @Param("catalogId") Long catalogId);
 }

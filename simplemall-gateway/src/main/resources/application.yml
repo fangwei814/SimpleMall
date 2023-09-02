@@ -39,7 +39,7 @@ spring:
         - id: simplemall_host_route
           uri: lb://simplemall-product
           predicates:
-            - Host=**.simplemall.com
+            - Host=simplemall.com, item.simplemall.com
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848

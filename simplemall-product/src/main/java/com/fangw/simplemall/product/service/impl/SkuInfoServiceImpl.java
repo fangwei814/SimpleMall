@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
@@ -14,11 +15,24 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.Query;
 import com.fangw.simplemall.product.dao.SkuInfoDao;
+import com.fangw.simplemall.product.entity.SkuImagesEntity;
 import com.fangw.simplemall.product.entity.SkuInfoEntity;
-import com.fangw.simplemall.product.service.SkuInfoService;
+import com.fangw.simplemall.product.entity.SpuInfoDescEntity;
+import com.fangw.simplemall.product.service.*;
+import com.fangw.simplemall.product.vo.SkuItemSaleAttrsVo;
+import com.fangw.simplemall.product.vo.SkuItemVo;
+import com.fangw.simplemall.product.vo.SpuItemAttrGroupVo;
 
-@Service("skuInfoService")
+@Service
 public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> implements SkuInfoService {
+    @Autowired
+    private SkuImagesService skuImagesService;
+    @Autowired
+    private SkuSaleAttrValueService saleAttrValueService;
+    @Autowired
+    private SpuInfoDescService spuInfoDescService;
+    @Autowired
+    private AttrGroupService attrGroupService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -87,6 +101,37 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     @Override
     public List<SkuInfoEntity> getSkusBySpuId(Long spuId) {
         return list(new LambdaQueryWrapper<SkuInfoEntity>().eq(SkuInfoEntity::getSpuId, spuId));
+    }
+
+    @Override
+    public SkuItemVo item(Long skuId) {
+        SkuItemVo skuItemVo = new SkuItemVo();
+
+        // 1.sku基本信息
+        SkuInfoEntity info = getById(skuId);
+        skuItemVo.setInfo(info);
+
+        // 2.图片信息
+        // 查询pms_sku_images
+        List<SkuImagesEntity> images = skuImagesService.getImagesBySkuId(skuId);
+        skuItemVo.setImages(images);
+
+        // 3.销售属性
+        // pms_sku_sale_attr_value pms_sku_info
+        List<SkuItemSaleAttrsVo> saleAttrsVos = saleAttrValueService.getSaleAttrsBySpuId(info.getSpuId());
+        skuItemVo.setSaleAttr(saleAttrsVos);
+
+        // 4.介绍
+        SpuInfoDescEntity spuInfoDescEntity = spuInfoDescService.getById(info.getSpuId());
+        skuItemVo.setDesp(spuInfoDescEntity);
+
+        // 5.规格参数
+        // 通过category找到所有attrgroup，通过attrgroup和relation查到所有attr，通过product_attr_value查到具体的值
+        List<SpuItemAttrGroupVo> attrGroupVos =
+            attrGroupService.getAttrGroupWithAttrsBySpuId(info.getSpuId(), info.getCatalogId());
+        skuItemVo.setGroupAttrs(attrGroupVos);
+
+        return skuItemVo;
     }
 
 }

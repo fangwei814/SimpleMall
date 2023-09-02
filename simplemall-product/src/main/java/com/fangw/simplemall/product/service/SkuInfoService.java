@@ -6,6 +6,7 @@ import java.util.Map;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.SkuInfoEntity;
+import com.fangw.simplemall.product.vo.SkuItemVo;
 
 /**
  * sku信息
@@ -35,4 +36,12 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
      * @return
      */
     List<SkuInfoEntity> getSkusBySpuId(Long spuId);
+
+    /**
+     * 展示当前sku的详细信息
+     * 
+     * @param skuId
+     * @return
+     */
+    SkuItemVo item(Long skuId);
 }

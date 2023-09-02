@@ -25,4 +25,12 @@ public interface SkuImagesService extends IService<SkuImagesEntity> {
      * @param images
      */
     void saveImages(Long id, List<String> images);
+
+    /**
+     * 通过skuId获取对应的所有图片
+     * 
+     * @param skuId
+     * @return
+     */
+    List<SkuImagesEntity> getImagesBySkuId(Long skuId);
 }

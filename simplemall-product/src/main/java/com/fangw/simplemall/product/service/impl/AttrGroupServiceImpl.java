@@ -21,6 +21,7 @@ import com.fangw.simplemall.product.entity.AttrGroupEntity;
 import com.fangw.simplemall.product.service.AttrGroupService;
 import com.fangw.simplemall.product.service.AttrService;
 import com.fangw.simplemall.product.vo.AttrGroupWithAttrsVo;
+import com.fangw.simplemall.product.vo.SpuItemAttrGroupVo;
 
 @Service("attrGroupService")
 public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEntity> implements AttrGroupService {
@@ -80,6 +81,15 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             attrGroupWithAttrsVo.setAttrs(attrList);
             return attrGroupWithAttrsVo;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) {
+        // spuId查类别id
+        // 类别id查attrgroupid
+        // attrgroup通过关联关系查attr
+        // attr查product_attr_value
+        return baseMapper.getAttrGroupWithAttrsBySpuId(spuId, catalogId);
     }
 
 }
