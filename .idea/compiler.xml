@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="simplemall-member" />
         <module name="simplemall-product" />
+        <module name="simplemall-auth-server" />
         <module name="simplemall-order" />
         <module name="simplemall-ware" />
         <module name="simplemall-search" />
@@ -28,6 +29,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="renren-fast" options="-parameters" />
       <module name="renren-generator" options="-parameters" />
+      <module name="simplemall-auth-server" options="-parameters" />
       <module name="simplemall-coupon" options="-parameters" />
       <module name="simplemall-gateway" options="-parameters" />
       <module name="simplemall-member" options="-parameters" />

@@ -21,5 +21,6 @@
         <module>simplemall-gateway</module>
         <module>simplemall-third-party</module>
         <module>simplemall-search</module>
+        <module>simplemall-auth-server</module>
     </modules>
 </project>
