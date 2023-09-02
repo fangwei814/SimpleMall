@@ -1,5 +1,7 @@
 package com.fangw.simplemall.product.vo;
 
+import java.util.List;
+
 import lombok.Data;
 
 // 销售属性组合
@@ -7,5 +9,5 @@ import lombok.Data;
 public class SkuItemSaleAttrsVo {
     private Long attrId;
     private String attrName;
-    private String attrValues;
+    private List<AttrValueWithSkuIdVo> attrValues;
 }
