@@ -9,3 +9,6 @@ spring:
     cache: false
   application:
     name: simplemall-auth-server
+  redis:
+    host: 192.168.56.10
+    port: 6379
