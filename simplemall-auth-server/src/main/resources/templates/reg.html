@@ -6039,29 +6039,26 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
     </div>
 </header>
 <section>
-    <form action="/register" method="post" class="one">
-        <!--		<div style="color: red" th:text="${errors != null ? (#maps.containsKey(errors, 'msg') ? errors.msg : '') : ''}">-->
+    <form action="/regist" method="post" class="one">
         <div class="register-box">
             <label class="username_label">用 户 名
                 <input name="userName" maxlength="20" type="text" placeholder="您的用户名和登录名">
             </label>
-            <div class="tips" style="color: red"
-                 th:text="${errors != null ? (#maps.containsKey(errors, 'userName') ? errors.userName : '') : ''}">
+            <div class="tips" th:text="${errors!=null?errors.userName:''}">
 
             </div>
         </div>
         <div class="register-box">
             <label class="other_label">设 置 密 码
-                <input name="password" maxlength="20" type="password" placeholder="建议至少使用两种字符组合">
+                <input name="passWord" maxlength="20" type="password" placeholder="建议至少使用两种字符组合">
             </label>
-            <div class="tips" style="color: red"
-                 th:text="${errors != null ? (#maps.containsKey(errors, 'password') ? errors.password : '') : ''}">
+            <div class="tips" th:text="${errors!=null?errors.passWord:''}">
 
             </div>
         </div>
         <div class="register-box">
             <label class="other_label">确 认 密 码
-                <input maxlength="20" type="password" placeholder="请再次输入密码">
+                <input name="passWordRepeat" maxlength="20" type="password" placeholder="请再次输入密码">
             </label>
             <div class="tips">
 
@@ -6073,8 +6070,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
                 <input name="phone" class="phone" id="phoneNum" maxlength="20" type="text"
                        placeholder="建议使用常用手机">
             </label>
-            <div class="tips" style="color: red"
-                 th:text="${errors != null ? (#maps.containsKey(errors, 'phone') ? errors.phone : '') : ''}">
+            <div class="tips" th:text="${errors!=null?errors.phone:''}">
 
             </div>
         </div>
@@ -6082,14 +6078,16 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
             <label class="other_label">验 证 码
                 <input name="code" maxlength="20" type="text" placeholder="请输入验证码" class="caa">
             </label>
-            <a id="sendCode" class=""> 发送验证码 </a>
+            <a id="sendCode">发送验证码 </a>
+            <div class="tips" th:text="${errors!=null?errors.code:''}">
+
+            </div>
         </div>
         <div class="arguement">
             <input type="checkbox" id="xieyi"> 阅读并同意
-            <a href="/static/reg/#">《谷粒商城用户注册协议》</a>
-            <a href="/static/reg/#">《隐私政策》</a>
-            <div class="tips" style="color: red"
-                 th:text="${errors != null ? (#maps.containsKey(errors, 'code') ? errors.code : '') : ''}">
+            <a href="static/reg/#">《谷粒商城用户注册协议》</a>
+            <a href="static/reg/#">《隐私政策》</a>
+            <div class="tips">
 
             </div>
             <br/>
@@ -6099,6 +6097,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
         </div>
 
     </form>
+
     <div class="two">
         <div class="right_r">
             <div class="right_r1">

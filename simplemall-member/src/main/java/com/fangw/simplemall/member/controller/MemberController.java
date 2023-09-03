@@ -6,11 +6,15 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.fangw.common.exception.BizCodeEnum;
+import com.fangw.common.exception.PhoneExistException;
+import com.fangw.common.exception.UsernameExistException;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
 import com.fangw.simplemall.member.entity.MemberEntity;
 import com.fangw.simplemall.member.feign.CouponFeignService;
 import com.fangw.simplemall.member.service.MemberService;
+import com.fangw.simplemall.member.vo.MemberRegistVo;
 
 /**
  * 会员
@@ -26,6 +30,24 @@ public class MemberController {
     private MemberService memberService;
     @Autowired
     private CouponFeignService couponFeignService;
+
+    /**
+     * 注册用户
+     * 
+     * @param vo
+     * @return
+     */
+    @PostMapping("/regist")
+    public R regist(@RequestBody MemberRegistVo vo) {
+        try {
+            memberService.regist(vo);
+        } catch (PhoneExistException e) {
+            return R.error(BizCodeEnum.PHONE_EXIST_EXCEPTION.getCode(), BizCodeEnum.PHONE_EXIST_EXCEPTION.getMsg());
+        } catch (UsernameExistException e) {
+            return R.error(BizCodeEnum.USER_EXIST_EXCEPTION.getCode(), BizCodeEnum.USER_EXIST_EXCEPTION.getMsg());
+        }
+        return R.ok();
+    }
 
     @RequestMapping("coupon/list")
     public R couponlist() {
