@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.alibaba.fastjson.TypeReference;
 import com.fangw.common.constant.AuthServerConstant;
 import com.fangw.common.exception.BizCodeEnum;
 import com.fangw.common.utils.R;
 import com.fangw.simplemall.auth.feign.MemberFeignService;
 import com.fangw.simplemall.auth.feign.ThirdPartyFeignService;
+import com.fangw.simplemall.auth.vo.UserLoginVo;
 import com.fangw.simplemall.auth.vo.UserRegistVo;
 
 @Controller
@@ -35,6 +37,30 @@ public class LoginController {
     private StringRedisTemplate redisTemplate;
     @Autowired
     MemberFeignService memberFeignService;
+
+    /**
+     * 登录
+     * 
+     * @param vo
+     * @param redirectAttributes
+     * @return
+     */
+    @PostMapping("/login")
+    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes) {
+        // 调用远程接口登录
+        R login = memberFeignService.login(vo);
+        if (login.getCode() == 0) {
+            // TODO 登录成功处理
+            return "redirect:http://simplemall.com";
+        } else {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("msg", login.getData("msg", new TypeReference<String>() {}));
+            redirectAttributes.addFlashAttribute("errors", errors);
+
+            // 如果校验错误，转发到注册页
+            return "redirect:http://auth.simplemall.com/login.html";
+        }
+    }
 
     /**
      * 注册

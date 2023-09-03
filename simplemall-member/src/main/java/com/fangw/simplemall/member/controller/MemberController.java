@@ -2,6 +2,7 @@ package com.fangw.simplemall.member.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import com.fangw.common.utils.R;
 import com.fangw.simplemall.member.entity.MemberEntity;
 import com.fangw.simplemall.member.feign.CouponFeignService;
 import com.fangw.simplemall.member.service.MemberService;
+import com.fangw.simplemall.member.vo.MemberLoginVo;
 import com.fangw.simplemall.member.vo.MemberRegistVo;
 
 /**
@@ -30,6 +32,23 @@ public class MemberController {
     private MemberService memberService;
     @Autowired
     private CouponFeignService couponFeignService;
+
+    /**
+     * 登录
+     * 
+     * @param vo
+     * @return
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo vo) {
+        MemberEntity entity = memberService.login(vo);
+        if (Objects.nonNull(entity)) {
+            return R.ok();
+        } else {
+            return R.error(BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION.getCode(),
+                BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION.getMsg());
+        }
+    }
 
     /**
      * 注册用户

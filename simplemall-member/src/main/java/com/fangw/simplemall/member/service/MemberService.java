@@ -7,6 +7,7 @@ import com.fangw.common.exception.PhoneExistException;
 import com.fangw.common.exception.UsernameExistException;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.member.entity.MemberEntity;
+import com.fangw.simplemall.member.vo.MemberLoginVo;
 import com.fangw.simplemall.member.vo.MemberRegistVo;
 
 /**
@@ -30,4 +31,12 @@ public interface MemberService extends IService<MemberEntity> {
     void checkPhoneUnique(String phone) throws PhoneExistException;
 
     void checkUserNameUnique(String userName) throws UsernameExistException;
+
+    /**
+     * 登录
+     * 
+     * @param vo
+     * @return
+     */
+    MemberEntity login(MemberLoginVo vo);
 }

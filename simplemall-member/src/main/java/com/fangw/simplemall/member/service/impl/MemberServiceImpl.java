@@ -1,6 +1,7 @@
 package com.fangw.simplemall.member.service.impl;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,7 @@ import com.fangw.simplemall.member.entity.MemberEntity;
 import com.fangw.simplemall.member.entity.MemberLevelEntity;
 import com.fangw.simplemall.member.service.MemberLevelService;
 import com.fangw.simplemall.member.service.MemberService;
+import com.fangw.simplemall.member.vo.MemberLoginVo;
 import com.fangw.simplemall.member.vo.MemberRegistVo;
 
 @Service("memberService")
@@ -73,4 +75,27 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         }
     }
 
+    @Override
+    public MemberEntity login(MemberLoginVo vo) {
+        String loginacct = vo.getLoginacct();
+        String password = vo.getPassword();
+
+        // 1.查询数据库账号
+        // 只要手机号或者账号正确都能匹配
+        MemberEntity entity = getOne(new LambdaQueryWrapper<MemberEntity>().eq(MemberEntity::getMobile, loginacct).or()
+            .eq(MemberEntity::getUsername, loginacct));
+        if (Objects.isNull(entity)) {
+            return null;
+        } else {
+            // 2.判断密码是福哦正确
+            String passwordDb = entity.getPassword();
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            boolean matches = passwordEncoder.matches(password, passwordDb);
+            if (matches) {
+                return entity;
+            } else {
+                return null;
+            }
+        }
+    }
 }
