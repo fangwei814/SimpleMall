@@ -1,4 +1,4 @@
-package com.example.simplemall.thirdparty.controller;
+package com.fanw.simplemall.thirdparty.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

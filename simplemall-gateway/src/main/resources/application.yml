@@ -36,6 +36,10 @@ spring:
           uri: lb://simplemall-search
           predicates:
             - Host=search.simplemall.com
+        - id: simplemall_auth_route
+          uri: lb://simplemall-auth-server
+          predicates:
+            - Host=auth.simplemall.com
         - id: simplemall_host_route
           uri: lb://simplemall-product
           predicates:
