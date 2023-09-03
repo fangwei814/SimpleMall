@@ -1,29 +1,17 @@
-package com.fangw.simplemall.member.entity;
+package com.fangw.simplemall.auth.vo;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-
 import lombok.Data;
+import lombok.ToString;
 
-/**
- * 会员
- * 
- * @author fangw
- * @email 1779219498@qq.com
- * @date 2023-08-16 20:45:08
- */
+@ToString
 @Data
-@TableName("ums_member")
-public class MemberEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class MemberRespVo implements Serializable {
 
-    /**
-     * id
-     */
-    @TableId
+    private static final long serialVersionUID = 5573669251256409786L;
+
     private Long id;
     /**
      * 会员等级id
@@ -93,17 +81,20 @@ public class MemberEntity implements Serializable {
      * 注册时间
      */
     private Date createTime;
+
     /**
-     * 社交用户的唯一id
+     * 社交登录UID
      */
     private String socialUid;
+
     /**
-     * 社交登陆访问令牌
+     * 社交登录TOKEN
      */
     private String accessToken;
+
     /**
-     * 社交登陆访问令牌的过期时间
+     * 社交登录过期时间
      */
-    private Long expiresIn;
+    private long expiresIn;
 
 }

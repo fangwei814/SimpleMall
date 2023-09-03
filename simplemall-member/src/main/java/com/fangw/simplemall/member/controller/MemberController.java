@@ -17,6 +17,7 @@ import com.fangw.simplemall.member.feign.CouponFeignService;
 import com.fangw.simplemall.member.service.MemberService;
 import com.fangw.simplemall.member.vo.MemberLoginVo;
 import com.fangw.simplemall.member.vo.MemberRegistVo;
+import com.fangw.simplemall.member.vo.SocialUser;
 
 /**
  * 会员
@@ -32,6 +33,22 @@ public class MemberController {
     private MemberService memberService;
     @Autowired
     private CouponFeignService couponFeignService;
+
+    /**
+     * 社交登录
+     * 
+     * @return
+     */
+    @PostMapping("/oauth2/login")
+    public R oauth2Login(@RequestBody SocialUser socialUser) throws Exception {
+        MemberEntity entity = memberService.login(socialUser);
+        if (entity != null) {
+            return R.ok().setData(entity);
+        } else {
+            return R.error(BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION.getCode(),
+                BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION.getMsg());
+        }
+    }
 
     /**
      * 登录

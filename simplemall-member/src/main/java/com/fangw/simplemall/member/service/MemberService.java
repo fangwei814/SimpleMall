@@ -9,6 +9,7 @@ import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.member.entity.MemberEntity;
 import com.fangw.simplemall.member.vo.MemberLoginVo;
 import com.fangw.simplemall.member.vo.MemberRegistVo;
+import com.fangw.simplemall.member.vo.SocialUser;
 
 /**
  * 会员
@@ -39,4 +40,12 @@ public interface MemberService extends IService<MemberEntity> {
      * @return
      */
     MemberEntity login(MemberLoginVo vo);
+
+    /**
+     * 社交账号登录
+     * 
+     * @param socialUser
+     * @return
+     */
+    MemberEntity login(SocialUser socialUser);
 }

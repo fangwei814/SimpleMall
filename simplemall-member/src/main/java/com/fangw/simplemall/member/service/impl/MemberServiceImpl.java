@@ -22,6 +22,7 @@ import com.fangw.simplemall.member.service.MemberLevelService;
 import com.fangw.simplemall.member.service.MemberService;
 import com.fangw.simplemall.member.vo.MemberLoginVo;
 import com.fangw.simplemall.member.vo.MemberRegistVo;
+import com.fangw.simplemall.member.vo.SocialUser;
 
 @Service("memberService")
 public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> implements MemberService {
@@ -97,5 +98,60 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
                 return null;
             }
         }
+    }
+
+    @Override
+    public MemberEntity login(SocialUser socialUser) {
+        // String uid = socialUser.getUid();
+        // // 1、判断当前社交用户是否已经登录过系统
+        // MemberDao memberDao = this.baseMapper;
+        // MemberEntity memberEntity = memberDao.selectOne(new QueryWrapper<MemberEntity>().eq("social_uid", uid));
+        // if (memberEntity != null) {
+        // // 2、这个用户已经注册过
+        // MemberEntity update = new MemberEntity();
+        // update.setId(memberEntity.getId());
+        // update.setAccessToken(socialUser.getAccess_token());
+        // update.setExpiresIn(socialUser.getExpires_in());
+        //
+        // // 需要修改 登录令牌 和 登录令牌的过期时间
+        // memberDao.updateById(update);
+        //
+        // memberEntity.setAccessToken(socialUser.getAccess_token());
+        // memberEntity.setExpiresIn(socialUser.getExpires_in());
+        // return memberEntity;
+        // } else {
+        // // 2、没有查到当前社交用户对应的记录，我们需要注册一个
+        // MemberEntity regist = new MemberEntity();
+        // try{
+        // // 3、查询当前社交用户的社交账号信息（昵称，性别等）
+        // Map<String,String> query = new HashMap<>();
+        // query.put("access_token",socialUser.getAccess_token());
+        // query.put("uid",socialUser.getUid());
+        // HttpResponse response = HttpUtils.doGet("https://api.weibo.com", "/2/users/show.json", "get", new
+        // HashMap<String, String>(), query);
+        // if (response.getStatusLine().getStatusCode() == 200) {
+        // // 查询成功
+        // String json = EntityUtils.toString(response.getEntity());
+        // JSONObject jsonObject = JSON.parseObject(json);
+        // // 当前社交账号的信息
+        // String name = jsonObject.getString("name");
+        // String gender = jsonObject.getString("gender");
+        // String profile_image_url = jsonObject.getString("profile_image_url");
+        // regist.setNickname(name);
+        // regist.setGender("m".equals(gender)?1:0);
+        // regist.setHeader(profile_image_url);
+        // }
+        // }catch (Exception e){
+        //
+        // }
+        // regist.setSocialUid(socialUser.getUid());
+        // regist.setAccessToken(socialUser.getAccess_token());
+        // regist.setExpiresIn(socialUser.getExpires_in());
+        // memberDao.insert(regist);
+        // // 设置默认等级
+        // MemberLevelEntity levelEntity = memberLevelDao.getDefaultLevel();
+        // regist.setLevelId(levelEntity.getId());
+        // return regist;
+        return null;
     }
 }
