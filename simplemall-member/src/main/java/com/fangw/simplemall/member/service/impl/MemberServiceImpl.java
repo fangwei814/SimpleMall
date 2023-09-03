@@ -102,6 +102,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
 
     @Override
     public MemberEntity login(SocialUser socialUser) {
+        // todo: gitee获取不到id怎么搞
         // String uid = socialUser.getUid();
         // // 1、判断当前社交用户是否已经登录过系统
         // MemberDao memberDao = this.baseMapper;
