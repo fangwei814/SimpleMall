@@ -149,7 +149,8 @@
             </div>
             <div>
                 <ol>
-                    <li>总价:<span style="color:#e64346;font-weight:bold;font-size:16px;" class="fnt">￥0.00</span></li>
+                    <li>总价:<span style="color:#e64346;font-weight:bold;font-size:16px;" class="fnt">￥[[${#numbers.formatDecimal(cart.totalAmount,3,2)}]]</span>
+                    </li>
 
                 </ol>
             </div>
@@ -174,7 +175,7 @@
         </dl>
     </div>
     <div>
-        <button type="button">删除</button>
+        <button type="button" onclick="deleteItem()">删除</button>
 
     </div>
 </div>
@@ -781,6 +782,15 @@
         location.href = "http://cart.simplemall.com/countItem?skuId=" + skuId + "&num=" + num;
     });
 
+    let deleteId = 0;
+    $(".deleteItemBtn").click(function () {
+        deleteId = $(this).attr("skuId");
+    });
+
+    //删除购物车选项
+    function deleteItem() {
+        location.href = "http://cart.simplemall.com/deleteItem?skuId=" + deleteId;
+    }
 
 </script>
 </html>

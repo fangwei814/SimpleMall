@@ -18,18 +18,52 @@ public class CartController {
     @Autowired
     CartService cartService;
 
+    /**
+     * 删除某项
+     * 
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/deleteItem")
+    public String deleteItem(@RequestParam("skuId") Long skuId) {
+        cartService.deleteItem(skuId);
+        return "redirect:http://cart.simplemall.com/cart.html";
+    }
+
+    /**
+     * 修改某项数量
+     * 
+     * @param skuId
+     * @param num
+     * @return
+     */
     @GetMapping("/countItem")
     public String countItem(@RequestParam("skuId") Long skuId, @RequestParam("num") Integer num) {
         cartService.countItem(skuId, num);
         return "redirect:http://cart.simplemall.com/cart.html";
     }
 
+    /**
+     * 选中取消某项
+     * 
+     * @param skuId
+     * @param check
+     * @return
+     */
     @GetMapping("/checkItem")
     public String checkItem(@RequestParam("skuId") Long skuId, @RequestParam("check") Integer check) {
         cartService.checkItem(skuId, check);
         return "redirect:http://cart.simplemall.com/cart.html";
     }
 
+    /**
+     * 购物车页面
+     * 
+     * @param model
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @GetMapping("/cart.html")
     public String cartListPage(Model model) throws ExecutionException, InterruptedException {
         Cart cart = cartService.getCart();

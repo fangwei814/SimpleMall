@@ -50,4 +50,11 @@ public interface CartService {
      * @param num
      */
     void countItem(Long skuId, Integer num);
+
+    /**
+     * 删除某项
+     * 
+     * @param skuId
+     */
+    void deleteItem(Long skuId);
 }

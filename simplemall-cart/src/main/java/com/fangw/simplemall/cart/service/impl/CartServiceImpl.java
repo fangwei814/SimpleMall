@@ -157,6 +157,12 @@ public class CartServiceImpl implements CartService {
         cartOps.put(skuId.toString(), JSON.toJSONString(cartItem));
     }
 
+    @Override
+    public void deleteItem(Long skuId) {
+        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
+        cartOps.delete(skuId.toString());
+    }
+
     /**
      * 获取要操作的购物车
      * 
