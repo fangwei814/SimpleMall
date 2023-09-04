@@ -1,6 +1,8 @@
 server:
   port: 20000
 spring:
+  session:
+    store-type: redis
   cloud:
     nacos:
       discovery:

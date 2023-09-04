@@ -1,4 +1,4 @@
-package com.fangw.simplemall.auth.vo;
+package com.fangw.common.vo;
 
 import java.io.Serializable;
 import java.util.Date;

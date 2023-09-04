@@ -95,18 +95,19 @@
             </b>
             <ul>
                 <li>
-                    <a href="http://auth.simplemall.com/login.html">你好，请登录</a>
+                    <a th:if="${session.loginUser!=null}">Hi，[[${session.loginUser.nickname}]]</a>
+                    <a href="http://auth.gulimall.cn/login.html" th:if="${session.loginUser==null}">你好，请登录</a>
                 </li>
                 <li>
-                    <a href="http://auth.simplemall.com/reg.html" class="li_2">免费注册</a>
+                    <a th:if="${session.loginUser==null}" href="http://auth.gulimall.cn/reg.html"
+                       class="li_2">免费注册</a>
                 </li>
                 <span>|</span>
                 <li>
                     <a href="/static/#">我的订单</a>
                 </li>
-
-
             </ul>
+
         </div>
     </div>
     <!--搜索导航-->

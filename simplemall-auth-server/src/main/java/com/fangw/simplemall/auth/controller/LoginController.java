@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
@@ -24,6 +25,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.fangw.common.constant.AuthServerConstant;
 import com.fangw.common.exception.BizCodeEnum;
 import com.fangw.common.utils.R;
+import com.fangw.common.vo.MemberRespVo;
 import com.fangw.simplemall.auth.feign.MemberFeignService;
 import com.fangw.simplemall.auth.feign.ThirdPartyFeignService;
 import com.fangw.simplemall.auth.vo.UserLoginVo;
@@ -46,11 +48,13 @@ public class LoginController {
      * @return
      */
     @PostMapping("/login")
-    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes) {
+    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes, HttpSession session) {
         // 调用远程接口登录
         R login = memberFeignService.login(vo);
         if (login.getCode() == 0) {
             // TODO 登录成功处理
+            MemberRespVo data = login.getData("data", new TypeReference<MemberRespVo>() {});
+            session.setAttribute(AuthServerConstant.LOGIN_USER, data);
             return "redirect:http://simplemall.com";
         } else {
             Map<String, String> errors = new HashMap<>();
@@ -145,11 +149,19 @@ public class LoginController {
         thirdPartyFeignService.sendCode(phone, code);
         return R.ok();
     }
-    // @GetMapping("/login.html")
-    // public String loginPage() {
-    // return "login";
-    // }
-    //
+
+    @GetMapping("/login.html")
+    public String loginPage(HttpSession session) {
+        Object attribute = session.getAttribute(AuthServerConstant.LOGIN_USER);
+        if (attribute == null) {
+            // 没登录，跳转到登录页
+            return "login";
+        } else {
+            // 登录过，重定向到首页
+            return "redirect:http://simplemall.com";
+        }
+    }
+
     // @GetMapping("/reg.html")
     // public String regPage() {
     // return "reg";

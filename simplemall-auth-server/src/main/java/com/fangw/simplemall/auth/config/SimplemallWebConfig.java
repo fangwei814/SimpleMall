@@ -17,7 +17,7 @@ public class SimplemallWebConfig implements WebMvcConfigurer {
         /**
          * @GetMapping("/login.html") public String loginPage(){ return "login"; }
          */
-        registry.addViewController("/login.html").setViewName("login");
+        // registry.addViewController("/login.html").setViewName("login");
         registry.addViewController("/reg.html").setViewName("reg");
     }
 }

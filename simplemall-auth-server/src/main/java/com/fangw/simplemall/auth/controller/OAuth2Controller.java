@@ -3,6 +3,8 @@ package com.fangw.simplemall.auth.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.fangw.common.constant.AuthServerConstant;
 import com.fangw.common.utils.HttpUtils;
 import com.fangw.common.utils.R;
+import com.fangw.common.vo.MemberRespVo;
 import com.fangw.simplemall.auth.feign.MemberFeignService;
-import com.fangw.simplemall.auth.vo.MemberRespVo;
 import com.fangw.simplemall.auth.vo.SocialUser;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +37,7 @@ public class OAuth2Controller {
      * @throws Exception
      */
     @GetMapping("/oauth2.0/weibo/success")
-    public String weibo(@RequestParam("code") String code) throws Exception {
+    public String weibo(@RequestParam("code") String code, HttpSession session) throws Exception {
         Map<String, String> header = new HashMap<>();
         Map<String, String> query = new HashMap<>();
 
@@ -59,6 +62,7 @@ public class OAuth2Controller {
             if (oauth2Login.getCode() == 0) {
                 // 3、登录成功提取信息并跳回首页
                 MemberRespVo data = oauth2Login.getData("data", new TypeReference<MemberRespVo>() {});
+                session.setAttribute(AuthServerConstant.LOGIN_USER, data);
                 log.info("登录成功：用户:{}", data.toString());
                 return "redirect:http://simplemall.com";
             } else {
