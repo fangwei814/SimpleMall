@@ -96,10 +96,10 @@
             <ul>
                 <li>
                     <a th:if="${session.loginUser!=null}">Hi，[[${session.loginUser.nickname}]]</a>
-                    <a href="http://auth.gulimall.cn/login.html" th:if="${session.loginUser==null}">你好，请登录</a>
+                    <a href="http://auth.simplemall.com/login.html" th:if="${session.loginUser==null}">你好，请登录:</a>
                 </li>
                 <li>
-                    <a th:if="${session.loginUser==null}" href="http://auth.gulimall.cn/reg.html"
+                    <a th:if="${session.loginUser==null}" href="http://auth.simplemall.com/reg.html"
                        class="li_2">免费注册</a>
                 </li>
                 <span>|</span>
