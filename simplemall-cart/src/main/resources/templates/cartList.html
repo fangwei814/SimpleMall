@@ -23,10 +23,16 @@
 
             </ul>
             <ul class="header-right">
-                <li><a href="../登录页面\index.html" style="color: red;">你好，请登录</a></li>
-                <li><a href="../注册页面\index.html">免费注册</a></li>
+                <li>
+                    <a th:if="${session.loginUser!=null}">Hi，[[${session.loginUser.nickname}]]</a>
+                    <a href="http://auth.simplemall.com/login.html" th:if="${session.loginUser==null}">你好，请登录:</a>
+                </li>
+                <li>
+                    <a th:if="${session.loginUser==null}" href="http://auth.simplemall.com/reg.html"
+                       class="li_2">免费注册</a>
+                </li>
                 <li class="spacer"></li>
-                <li><a href="">我的订单</a></li>
+                <li><a href="/static/#">我的订单</a></li>
                 <li class="spacer"></li>
 
             </ul>
