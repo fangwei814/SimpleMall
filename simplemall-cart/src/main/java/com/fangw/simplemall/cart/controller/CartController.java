@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fangw.simplemall.cart.interceptor.CartInterceptor;
 import com.fangw.simplemall.cart.service.CartService;
+import com.fangw.simplemall.cart.vo.Cart;
 import com.fangw.simplemall.cart.vo.CartItem;
-import com.fangw.simplemall.cart.vo.UserInfoTo;
 
 @Controller
 public class CartController {
@@ -20,9 +19,9 @@ public class CartController {
     CartService cartService;
 
     @GetMapping("/cart.html")
-    public String cartListPage() {
-        // 1.从threadlocal中获取登录信息
-        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+    public String cartListPage(Model model) throws ExecutionException, InterruptedException {
+        Cart cart = cartService.getCart();
+        model.addAttribute("cart", cart);
 
         return "cartList";
     }
