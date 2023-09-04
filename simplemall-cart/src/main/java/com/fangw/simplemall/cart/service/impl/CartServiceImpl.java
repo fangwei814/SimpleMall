@@ -149,6 +149,14 @@ public class CartServiceImpl implements CartService {
         cartOps.put(skuId.toString(), s);
     }
 
+    @Override
+    public void countItem(Long skuId, Integer num) {
+        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
+        CartItem cartItem = getCartItem(skuId);
+        cartItem.setCount(num);
+        cartOps.put(skuId.toString(), JSON.toJSONString(cartItem));
+    }
+
     /**
      * 获取要操作的购物车
      * 
