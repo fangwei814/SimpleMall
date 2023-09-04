@@ -35,4 +35,11 @@ public interface CartService {
      */
     void clearCart(String cartKey);
 
+    /**
+     * 选中某一项
+     * 
+     * @param skuId
+     * @param check
+     */
+    void checkItem(Long skuId, Integer check);
 }

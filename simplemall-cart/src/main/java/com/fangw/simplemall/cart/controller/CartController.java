@@ -18,6 +18,12 @@ public class CartController {
     @Autowired
     CartService cartService;
 
+    @GetMapping("/checkItem")
+    public String checkItem(@RequestParam("skuId") Long skuId, @RequestParam("check") Integer check) {
+        cartService.checkItem(skuId, check);
+        return "redirect:http://cart.simplemall.com/cart.html";
+    }
+
     @GetMapping("/cart.html")
     public String cartListPage(Model model) throws ExecutionException, InterruptedException {
         Cart cart = cartService.getCart();
