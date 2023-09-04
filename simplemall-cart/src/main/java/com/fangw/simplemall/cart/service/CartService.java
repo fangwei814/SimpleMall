@@ -11,4 +11,12 @@ public interface CartService {
      * @return
      */
     CartItem addToCart(Long skuId, Integer num);
+
+    /**
+     * 查询购物车
+     * 
+     * @param skuId
+     * @return
+     */
+    CartItem getCartItem(Long skuId);
 }
