@@ -1,6 +1,8 @@
 server:
   port: 40000
 spring:
+  thymeleaf:
+    cache: false
   cloud:
     nacos:
       discovery:
@@ -15,3 +17,8 @@ spring:
 logging:
   level:
     com.fangw.simplemall: error
+simplemall:
+  thread:
+    core-size: 4
+    max-size: 4
+    keep-alive-time: 10
