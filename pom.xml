@@ -22,5 +22,6 @@
         <module>simplemall-third-party</module>
         <module>simplemall-search</module>
         <module>simplemall-auth-server</module>
+        <module>simplemall-cart</module>
     </modules>
 </project>
