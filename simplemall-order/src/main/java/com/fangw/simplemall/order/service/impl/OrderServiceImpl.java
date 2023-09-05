@@ -175,6 +175,42 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     }
 
     /**
+     * 计算价格
+     * 
+     * @param orderEntity
+     * @param itemEntities
+     */
+    private void computePrice(OrderEntity orderEntity, List<OrderItemEntity> itemEntities) {
+        BigDecimal total = new BigDecimal("0.0");
+        BigDecimal coupon = new BigDecimal("0.0");
+        BigDecimal integration = new BigDecimal("0.0");
+        BigDecimal promotion = new BigDecimal("0.0");
+        BigDecimal gift = new BigDecimal("0.0");
+        BigDecimal growth = new BigDecimal("0.0");
+
+        // 1、订单的总额，叠加每一个订单项的总额信息
+        for (OrderItemEntity entity : itemEntities) {
+            total = total.add(entity.getRealAmount());
+            coupon = coupon.add(entity.getCouponAmount());
+            integration = integration.add(entity.getIntegrationAmount());
+            promotion = promotion.add(entity.getPromotionAmount());
+            gift = gift.add(new BigDecimal(entity.getGiftIntegration()));
+            growth = growth.add(new BigDecimal(entity.getGiftGrowth()));
+        }
+        // 订单总额
+        orderEntity.setTotalAmount(total);
+        // 应付总额
+        orderEntity.setPayAmount(total.add(orderEntity.getFreightAmount()));
+        orderEntity.setCouponAmount(coupon);
+        orderEntity.setIntegrationAmount(integration);
+        orderEntity.setPromotionAmount(promotion);
+        // 设置积分等信息
+        orderEntity.setIntegration(gift.intValue());
+        orderEntity.setGrowth(growth.intValue());
+        orderEntity.setDeleteStatus(0); // 0 未删除
+    }
+
+    /**
      * 构建所有订单项数据
      * 
      * @param orderSn
