@@ -63,7 +63,7 @@ public class CartServiceImpl implements CartService {
             }, executor);
 
             // 5.往redis里放数据
-            CompletableFuture.allOf(getSkuInfoTask, getSkuSaleAttrValues);
+            CompletableFuture.allOf(getSkuInfoTask, getSkuSaleAttrValues).join();
             String s = JSON.toJSONString(cartItem);
             cartOps.put(skuId.toString(), s);
 

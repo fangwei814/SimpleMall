@@ -16,7 +16,7 @@ public class OrderWebController {
     @GetMapping("/toTrade")
     public String toTrade(Model model) {
         OrderConfirmVo confirmVo = orderService.confirmOrder();
-        model.addAttribute("OrderConfirmData", confirmVo);
+        model.addAttribute("orderConfirmData", confirmVo);
         return "confirm";
     }
 }

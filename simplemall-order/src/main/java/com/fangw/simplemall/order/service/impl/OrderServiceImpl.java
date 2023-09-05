@@ -2,29 +2,35 @@ package com.fangw.simplemall.order.service.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.Query;
+import com.fangw.common.utils.R;
 import com.fangw.common.vo.MemberRespVo;
 import com.fangw.simplemall.order.dao.OrderDao;
 import com.fangw.simplemall.order.entity.OrderEntity;
 import com.fangw.simplemall.order.feign.CartFeignService;
 import com.fangw.simplemall.order.feign.MemberFeignService;
+import com.fangw.simplemall.order.feign.WareFeignService;
 import com.fangw.simplemall.order.interceptor.LoginUserInterceptor;
 import com.fangw.simplemall.order.service.OrderService;
 import com.fangw.simplemall.order.vo.MemberAddressVo;
 import com.fangw.simplemall.order.vo.OrderConfirmVo;
 import com.fangw.simplemall.order.vo.OrderItemVo;
+import com.fangw.simplemall.order.vo.SkuStockVo;
 
 @Service("orderService")
 public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> implements OrderService {
@@ -32,6 +38,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private MemberFeignService memberFeignService;
     @Autowired
     private CartFeignService cartFeignService;
+    @Autowired
+    private WareFeignService wareFeignService;
     @Autowired
     private ThreadPoolExecutor executor;
 
@@ -65,6 +73,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             RequestContextHolder.setRequestAttributes(requestAttributes);
             List<OrderItemVo> items = cartFeignService.getCurrentUserCartItems();
             confirmVo.setItems(items);
+        }, executor).thenRunAsync(() -> {
+            // 批量查询商品项库存
+            List<OrderItemVo> items = confirmVo.getItems();
+            List<Long> collect = items.stream().map(OrderItemVo::getSkuId).collect(Collectors.toList());
+            R skuHasStock = wareFeignService.getSkuHasStock(collect);
+            if (skuHasStock.getCode() == 0) {
+                List<SkuStockVo> data = skuHasStock.getData(new TypeReference<List<SkuStockVo>>() {});
+                if (Objects.nonNull(data)) {
+                    Map<Long, Boolean> map =
+                        data.stream().collect(Collectors.toMap(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
+                    confirmVo.setStocks(map);
+                }
+            }
         }, executor);
 
         // 3、查询用户积分
@@ -74,7 +95,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         // todo: 4、其他数据自动计算
         // todo: 5、防重令牌
 
-        CompletableFuture.allOf(addressFuture, cartFuture);
+        CompletableFuture.allOf(addressFuture, cartFuture).join();
         return confirmVo;
     }
 
