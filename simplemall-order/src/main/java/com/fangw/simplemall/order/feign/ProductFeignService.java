@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.fangw.common.utils.R;
 
-@FeignClient("simplemall-ware")
+@FeignClient("simplemall-product")
 public interface ProductFeignService {
     @GetMapping("/product/spuinfo/skuId/{id}")
     R getSpuInfoBySkuId(@PathVariable("id") Long skuId);

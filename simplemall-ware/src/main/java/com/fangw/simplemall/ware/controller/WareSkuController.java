@@ -7,11 +7,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.fangw.common.exception.BizCodeEnum;
+import com.fangw.common.exception.NoStockException;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
 import com.fangw.common.vo.SkuHasStockVo;
 import com.fangw.simplemall.ware.entity.WareSkuEntity;
 import com.fangw.simplemall.ware.service.WareSkuService;
+import com.fangw.simplemall.ware.vo.WareSkuLockVo;
 
 /**
  * 商品库存
@@ -27,8 +30,24 @@ public class WareSkuController {
     private WareSkuService wareSkuService;
 
     /**
-     * 查询指定的skuIds是否有库存
+     * 锁定订单项库存
      * 
+     * @param vo
+     * @return
+     */
+    @PostMapping("/lock/order")
+    public R orderLockStock(@RequestBody WareSkuLockVo vo) {
+        try {
+            Boolean stock = wareSkuService.orderLockStock(vo);
+            return R.ok();
+        } catch (NoStockException e) {
+            return R.error(BizCodeEnum.NO_STOCK_EXCEPTION.getCode(), BizCodeEnum.NO_STOCK_EXCEPTION.getMsg());
+        }
+    }
+
+    /**
+     * 查询指定的skuIds是否有库存
+     *
      * @param skuIds
      * @return
      */

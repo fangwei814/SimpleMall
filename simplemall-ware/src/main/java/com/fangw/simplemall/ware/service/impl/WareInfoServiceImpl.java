@@ -52,7 +52,7 @@ public class WareInfoServiceImpl extends ServiceImpl<WareInfoDao, WareInfoEntity
             String phone = data.getPhone();
             String substring = phone.substring(phone.length() - 1, phone.length());
             BigDecimal bigDecimal = new BigDecimal(substring);
-            fareVo.setAddressVo(data);
+            fareVo.setAddress(data);
             fareVo.setFare(bigDecimal);
             return fareVo;
         }

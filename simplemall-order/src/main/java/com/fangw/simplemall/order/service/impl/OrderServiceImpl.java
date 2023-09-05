@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -20,6 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.constant.OrderConstant;
+import com.fangw.common.exception.NoStockException;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.Query;
 import com.fangw.common.utils.R;
@@ -105,7 +107,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         Integer integration = memberRespVo.getIntegration();
         confirmVo.setIntegration(integration);
 
-        // todo: 4、其他数据自动计算
+        // 4、其他数据自动计算
         // 5、防重令牌
         String token = UUID.randomUUID().toString().replace("_", "");
         redisTemplate.opsForValue().set(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberRespVo.getId(), token);
@@ -116,7 +118,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     }
 
     @Override
+    @Transactional
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
+        // 在当前线程共享 OrderSubmitVo
+        confirmVoThreadLocal.set(vo);
         SubmitOrderResponseVo response = new SubmitOrderResponseVo();
 
         // 拿到当前用户
@@ -130,8 +135,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         String orderToken = vo.getOrderToken();
 
         // 原子验证和删除令牌
-        Long result = redisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class), Arrays.asList(),
-            OrderConstant.USER_ORDER_TOKEN_PREFIX + memberRespVo.getId(), orderToken);
+        Long result = redisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class),
+            Arrays.asList(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberRespVo.getId()), orderToken);
         if (Objects.isNull(result) || result == 0L) {
             // 令牌验证失败
             response.setCode(1);
@@ -139,19 +144,66 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         } else {
             // 令牌验证成功
             // 2.创建订单
-            OrderCreateTo orderCreateTo = createOrder();
+            OrderCreateTo order = createOrder();
 
             // 3.验证价格
+            BigDecimal payAmount = order.getOrder().getPayAmount();
+            BigDecimal payPrice = vo.getPayPrice();
+            if (Math.abs(payAmount.subtract(payPrice).doubleValue()) < 0.01) {
+                // 4.金额对比成功，保存订单
+                saveOrder(order);
 
-            // 4.验证库存
+                // 5.库存锁定，只要有异常就回滚订单数据
+                // 订单号，所有订单项(skuId,skuName,num)
+                WareSkuLockVo lockVo = new WareSkuLockVo();
+                lockVo.setOrderSn(order.getOrder().getOrderSn());
+                List<OrderItemVo> locks = order.getOrderItems().stream().map(item -> {
+                    OrderItemVo itemVo = new OrderItemVo();
+                    itemVo.setSkuId(item.getSkuId());
+                    itemVo.setCount(item.getSkuQuantity());
+                    itemVo.setTitle(item.getSkuName());
+                    return itemVo;
+                }).collect(Collectors.toList());
+                lockVo.setLocks(locks);
 
-            return response;
+                // 远程锁库存
+                R r = wareFeignService.orderLockStock(lockVo);
+                if (r.getCode() == 0) {
+                    // 锁成功了
+                    response.setOrder(order.getOrder());
+                    response.setCode(0);
+                    return response;
+                } else {
+                    // 锁定失败
+                    throw new NoStockException((String)r.get("msg"));
+                }
+
+            } else {
+                // 金额对比失败
+                response.setCode(2);
+                return response;
+            }
         }
     }
 
     /**
+     * 保存订单、订单项数据
+     *
+     * @param order
+     */
+    private void saveOrder(OrderCreateTo order) {
+        OrderEntity orderEntity = order.getOrder();
+        orderEntity.setModifyTime(new Date());
+        this.save(orderEntity);
+
+        List<OrderItemEntity> orderItems = order.getOrderItems();
+        orderItemService.saveBatch(orderItems);
+
+    }
+
+    /**
      * 创建订单
-     * 
+     *
      * @return
      */
     private OrderCreateTo createOrder() {
@@ -171,12 +223,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         // 4.计算价格积分等相关信息
         computePrice(orderEntity, itemEntities);
 
-        return createOrder();
+        return orderCreateTo;
     }
 
     /**
      * 计算价格
-     * 
+     *
      * @param orderEntity
      * @param itemEntities
      */
@@ -212,7 +264,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     /**
      * 构建所有订单项数据
-     * 
+     *
      * @param orderSn
      * @return
      */
@@ -231,7 +283,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     /**
      * 构建某个订单项
-     * 
+     *
      * @param cartItem
      * @return
      */
@@ -277,7 +329,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     /**
      * 构建一个OrderSn的订单
-     * 
+     *
      * @param orderSn
      * @return
      */
@@ -290,8 +342,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         OrderSubmitVo orderSubmitVo = confirmVoThreadLocal.get();
 
         // 1、获取运费 和 收货信息
-        R fare = wareFeignService.getFare(orderSubmitVo.getAddrId());
-        FareVo fareResp = fare.getData(new TypeReference<FareVo>() {});
+        R r = wareFeignService.getFare(orderSubmitVo.getAddrId());
+        FareVo fareResp = r.getData(new TypeReference<FareVo>() {});
 
         // 2、设置运费
         entity.setFreightAmount(fareResp.getFare());

@@ -50,14 +50,14 @@ public class OrderWebController {
                         break;
                 }
                 redirectAttributes.addAttribute("msg", msg);
-                return "redirect:http://order.gulimall.cn/toTrade";
+                return "redirect:http://order.simplemall.com/toTrade";
             }
         } catch (Exception e) {
             if (e instanceof NoStockException) {
                 String message = e.getMessage();
                 redirectAttributes.addFlashAttribute("msg", message);
             }
-            return "redirect:http://order.gulimall.cn/toTrade";
+            return "redirect:http://order.simplemall.com/toTrade";
         }
     }
 

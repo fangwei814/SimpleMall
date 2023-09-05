@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.vo.SkuHasStockVo;
 import com.fangw.simplemall.ware.entity.WareSkuEntity;
+import com.fangw.simplemall.ware.vo.WareSkuLockVo;
 
 /**
  * 商品库存
@@ -35,4 +36,12 @@ public interface WareSkuService extends IService<WareSkuEntity> {
      * @return
      */
     List<SkuHasStockVo> getSkusHasStock(List<Long> skuIds);
+
+    /**
+     * 锁定指定订单的库存
+     * 
+     * @param vo
+     * @return (rollbackFor = NoStockException.class) 默认只要是运行时异常都会回滚
+     */
+    Boolean orderLockStock(WareSkuLockVo vo);
 }

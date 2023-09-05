@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fangw.common.utils.R;
+import com.fangw.simplemall.order.vo.WareSkuLockVo;
 
 @FeignClient("simplemall-ware")
 public interface WareFeignService {
@@ -23,4 +24,13 @@ public interface WareFeignService {
      */
     @GetMapping("/ware/wareinfo/fare")
     R getFare(@RequestParam("addrId") Long addrId);
+
+    /**
+     * 锁定指定订单的库存
+     * 
+     * @param vo
+     * @return
+     */
+    @PostMapping("/ware/waresku/lock/order")
+    R orderLockStock(@RequestBody WareSkuLockVo vo);
 }

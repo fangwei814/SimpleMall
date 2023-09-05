@@ -9,6 +9,6 @@ import lombok.Data;
  */
 @Data
 public class FareVo {
-    private MemberAddressVo addressVo;
+    private MemberAddressVo address;
     private BigDecimal fare;
 }
