@@ -1,10 +1,11 @@
 package com.fangw.simplemall.order.service;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.order.entity.OrderEntity;
-
-import java.util.Map;
+import com.fangw.simplemall.order.vo.OrderConfirmVo;
 
 /**
  * 订单
@@ -16,5 +17,11 @@ import java.util.Map;
 public interface OrderService extends IService<OrderEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 订单确认页数据获取
+     * 
+     * @return
+     */
+    OrderConfirmVo confirmOrder();
+}

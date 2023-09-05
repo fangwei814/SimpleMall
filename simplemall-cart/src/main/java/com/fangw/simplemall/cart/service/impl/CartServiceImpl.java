@@ -1,5 +1,6 @@
 package com.fangw.simplemall.cart.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -161,6 +162,29 @@ public class CartServiceImpl implements CartService {
     public void deleteItem(Long skuId) {
         BoundHashOperations<String, Object, Object> cartOps = getCartOps();
         cartOps.delete(skuId.toString());
+    }
+
+    @Override
+    public List<CartItem> getCurrentUserCartItems() {
+        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        if (Objects.isNull(userInfoTo)) {
+            return null;
+        } else {
+            String cartKey = CART_PREFIX + userInfoTo.getUserId();
+            List<CartItem> cartItems = getCartItems(cartKey);
+            if (Objects.isNull(cartItems)) {
+                return null;
+            }
+            return cartItems.stream().filter(CartItem::getCheck).map(item -> {
+                // 更新为最新价格
+                R r = productFeignService.getPrice(item.getSkuId());
+                if (r.getCode() == 0) {
+                    String data = (String)r.get("data");
+                    item.setPrice(new BigDecimal(data));
+                }
+                return item;
+            }).collect(Collectors.toList());
+        }
     }
 
     /**

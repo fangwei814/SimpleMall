@@ -1,5 +1,7 @@
 package com.fangw.simplemall.cart.service;
 
+import java.util.List;
+
 import com.fangw.simplemall.cart.vo.Cart;
 import com.fangw.simplemall.cart.vo.CartItem;
 
@@ -57,4 +59,11 @@ public interface CartService {
      * @param skuId
      */
     void deleteItem(Long skuId);
+
+    /**
+     * 获取所有选中的购物项
+     * 
+     * @return
+     */
+    List<CartItem> getCurrentUserCartItems();
 }
