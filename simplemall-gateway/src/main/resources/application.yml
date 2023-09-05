@@ -2,48 +2,62 @@ spring:
   cloud:
     gateway:
       routes:
+        # 商品服务路由
         - id: product_route
           uri: lb://simplemall-product
           predicates:
             - Path=/api/product/**
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+        # 会员服务路由
         - id: member_route
           uri: lb://simplemall-member
           predicates:
             - Path=/api/member/**
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+        # 库存服务路由
         - id: ware_route
           uri: lb://simplemall-ware
           predicates:
             - Path=/api/ware/**
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+        # 三方服务路由
         - id: third_party_route
           uri: lb://simplemall-third-party
           predicates:
             - Path=/api/thirdparty/**
           filters:
             - RewritePath=/api/thirdparty/(?<segment>.*),/$\{segment}
+        # 人人服务路由
         - id: admin_route
           uri: lb://renren-fast
           predicates:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}
+        # 搜索域名路由
         - id: simplemall_search_route
           uri: lb://simplemall-search
           predicates:
             - Host=search.simplemall.com
+        # 认证域名路由
         - id: simplemall_auth_route
           uri: lb://simplemall-auth-server
           predicates:
             - Host=auth.simplemall.com
+        # 购物车域名路由
         - id: simplemall_cart_route
           uri: lb://simplemall-cart
           predicates:
             - Host=cart.simplemall.com
+        # 订单域名路由
+        - id: simplemall_order_route
+          uri: lb://simplemall-order
+          predicates:
+            - Host=order.simplemall.com
+        # 主页、商品详情域名路由
         - id: simplemall_host_route
           uri: lb://simplemall-product
           predicates:

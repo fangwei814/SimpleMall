@@ -10,6 +10,19 @@ spring:
         server-addr: 127.0.0.1:8848
   application:
     name: simplemall-order
+  thymeleaf:
+    cache: false
+  rabbitmq:
+    host: 192.168.56.10
+    username: guest
+    port: 5672
+    virtual-host: /
+    password: guest
+  session:
+    store-type: redis
+  redis:
+    host: 192.168.56.10
+    port: 6379
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -20,3 +33,10 @@ mybatis-plus:
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 server:
   port: 9000
+
+# 线程池
+simplemall:
+  thread:
+    core-size: 4
+    max-size: 5
+    keep-alive-time: 10
