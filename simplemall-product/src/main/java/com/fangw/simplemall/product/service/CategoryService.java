@@ -6,6 +6,7 @@ import java.util.Map;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.CategoryEntity;
+import com.fangw.simplemall.product.vo.Catalog2Vo;
 
 /**
  * 商品三级分类
@@ -46,4 +47,25 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @param category
      */
     void updateDetail(CategoryEntity category);
+
+    /**
+     * 获取一级分类
+     * 
+     * @return
+     */
+    List<CategoryEntity> getLevel1Categorys();
+
+    /**
+     * 通过redis获取
+     * 
+     * @return
+     */
+    Map<String, List<Catalog2Vo>> getCatalogJsonFromRedis();
+
+    /**
+     * 获取分类vo
+     * 
+     * @return
+     */
+    Map<String, List<Catalog2Vo>> getCatalogJsonFromDbUsingCache();
 }

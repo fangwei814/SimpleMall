@@ -1,10 +1,12 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.SkuSaleAttrValueEntity;
-
-import java.util.Map;
+import com.fangw.simplemall.product.vo.SkuItemSaleAttrsVo;
 
 /**
  * sku销售属性&值
@@ -16,5 +18,14 @@ import java.util.Map;
 public interface SkuSaleAttrValueService extends IService<SkuSaleAttrValueEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 获取指定spu的所有属性
+     * 
+     * @param spuId
+     * @return
+     */
+    List<SkuItemSaleAttrsVo> getSaleAttrsBySpuId(Long spuId);
+
+    List<String> getSkuSaleAttrValuesAsStringList(Long skuId);
+}

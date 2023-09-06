@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -131,6 +132,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return pageUtils;
     }
 
+    @Cacheable(value = "attr", key = "'attrinfo:'+#root.args[0]")
     @Override
     public AttrRespVo getDetail(Long attrId) {
         // 1.查询属性
@@ -265,6 +267,15 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }
         IPage<AttrEntity> page = page(new Query<AttrEntity>().getPage(params), attrWrapper);
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<Long> selectSearchAttrIds(List<Long> attrIds) {
+        LambdaQueryWrapper<AttrEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(AttrEntity::getAttrId, attrIds);
+        wrapper.eq(AttrEntity::getSearchType, 1);
+        List<AttrEntity> list = list(wrapper);
+        return list.stream().map(AttrEntity::getAttrId).collect(Collectors.toList());
     }
 
 }

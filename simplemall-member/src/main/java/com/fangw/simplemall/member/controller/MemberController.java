@@ -2,21 +2,22 @@ package com.fangw.simplemall.member.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
-import com.fangw.simplemall.member.feign.CouponFeignService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.fangw.simplemall.member.entity.MemberEntity;
-import com.fangw.simplemall.member.service.MemberService;
+import com.fangw.common.exception.BizCodeEnum;
+import com.fangw.common.exception.PhoneExistException;
+import com.fangw.common.exception.UsernameExistException;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.R;
-
-
+import com.fangw.simplemall.member.entity.MemberEntity;
+import com.fangw.simplemall.member.feign.CouponFeignService;
+import com.fangw.simplemall.member.service.MemberService;
+import com.fangw.simplemall.member.vo.MemberLoginVo;
+import com.fangw.simplemall.member.vo.MemberRegistVo;
+import com.fangw.simplemall.member.vo.SocialUser;
 
 /**
  * 会员
@@ -30,16 +31,66 @@ import com.fangw.common.utils.R;
 public class MemberController {
     @Autowired
     private MemberService memberService;
-
     @Autowired
     private CouponFeignService couponFeignService;
+
+    /**
+     * 社交登录
+     * 
+     * @return
+     */
+    @PostMapping("/oauth2/login")
+    public R oauth2Login(@RequestBody SocialUser socialUser) throws Exception {
+        MemberEntity entity = memberService.login(socialUser);
+        if (entity != null) {
+            return R.ok().setData(entity);
+        } else {
+            return R.error(BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION.getCode(),
+                BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION.getMsg());
+        }
+    }
+
+    /**
+     * 登录
+     * 
+     * @param vo
+     * @return
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo vo) {
+        MemberEntity entity = memberService.login(vo);
+        if (Objects.nonNull(entity)) {
+            return R.ok().setData(entity);
+        } else {
+            return R.error(BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION.getCode(),
+                BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION.getMsg());
+        }
+    }
+
+    /**
+     * 注册用户
+     * 
+     * @param vo
+     * @return
+     */
+    @PostMapping("/regist")
+    public R regist(@RequestBody MemberRegistVo vo) {
+        try {
+            memberService.regist(vo);
+        } catch (PhoneExistException e) {
+            return R.error(BizCodeEnum.PHONE_EXIST_EXCEPTION.getCode(), BizCodeEnum.PHONE_EXIST_EXCEPTION.getMsg());
+        } catch (UsernameExistException e) {
+            return R.error(BizCodeEnum.USER_EXIST_EXCEPTION.getCode(), BizCodeEnum.USER_EXIST_EXCEPTION.getMsg());
+        }
+        return R.ok();
+    }
+
     @RequestMapping("coupon/list")
-    public R couponlist(){
+    public R couponlist() {
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setNickname("帅哥");
         R memberCoupon = couponFeignService.memberCoupon();
-        return R.ok().put("member", memberEntity).
-                put("coupons", memberCoupon.get("coupons"));
+        return R.ok().put("member", memberEntity).put("coupons", memberCoupon.get("coupons"));
     }
 
     /**
@@ -47,20 +98,19 @@ public class MemberController {
      */
     @RequestMapping("/list")
     // @RequiresPermissions("member:member:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = memberService.queryPage(params);
 
         return R.ok().put("page", page);
     }
-
 
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     // @RequiresPermissions("member:member:info")
-    public R info(@PathVariable("id") Long id){
-		MemberEntity member = memberService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        MemberEntity member = memberService.getById(id);
 
         return R.ok().put("member", member);
     }
@@ -70,8 +120,8 @@ public class MemberController {
      */
     @RequestMapping("/save")
     // @RequiresPermissions("member:member:save")
-    public R save(@RequestBody MemberEntity member){
-		memberService.save(member);
+    public R save(@RequestBody MemberEntity member) {
+        memberService.save(member);
 
         return R.ok();
     }
@@ -81,8 +131,8 @@ public class MemberController {
      */
     @RequestMapping("/update")
     // @RequiresPermissions("member:member:update")
-    public R update(@RequestBody MemberEntity member){
-		memberService.updateById(member);
+    public R update(@RequestBody MemberEntity member) {
+        memberService.updateById(member);
 
         return R.ok();
     }
@@ -92,8 +142,8 @@ public class MemberController {
      */
     @RequestMapping("/delete")
     // @RequiresPermissions("member:member:delete")
-    public R delete(@RequestBody Long[] ids){
-		memberService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        memberService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }

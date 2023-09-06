@@ -1,5 +1,6 @@
 package com.fangw.simplemall.product.service.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -52,6 +53,11 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
 
             // todo:其他表
         }
+    }
+
+    @Override
+    public List<BrandEntity> getBrandsByIds(List<Long> brandIds) {
+        return list(new LambdaQueryWrapper<BrandEntity>().in(BrandEntity::getBrandId, brandIds));
     }
 
 }

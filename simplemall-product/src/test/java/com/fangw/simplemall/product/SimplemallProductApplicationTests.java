@@ -20,10 +20,8 @@ import com.fangw.simplemall.product.service.BrandService;
 
 @SpringBootTest
 class SimplemallProductApplicationTests {
-
     @Autowired
     BrandService brandService;
-
     @Resource
     OSSClient ossClient;
 

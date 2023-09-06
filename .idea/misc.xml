@@ -3,6 +3,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/com.fangw.simplemall.member" />
     <file type="web" url="file://$PROJECT_DIR$/simplemall-gateway" />
+    <file type="web" url="file://$PROJECT_DIR$/simplemall-search" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -10,6 +11,8 @@
         <option value="$PROJECT_DIR$/coupon/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/simplemall-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/simplemall-auth-server/pom.xml" />
+        <option value="$PROJECT_DIR$/simplemall-cart/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

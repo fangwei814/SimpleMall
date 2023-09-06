@@ -8,15 +8,19 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="simplemall-member" />
-        <module name="simplemall-product" />
         <module name="simplemall-order" />
+        <module name="simplemall-coupon" />
+        <module name="simplemall-cart" />
+        <module name="renren-generator" />
+        <module name="simplemall-common" />
+        <module name="simplemall-product" />
+        <module name="simplemall-auth-server" />
         <module name="simplemall-ware" />
+        <module name="simplemall-search" />
         <module name="renren-fast" />
         <module name="simplemall-gateway" />
         <module name="simplemall-third-party" />
-        <module name="simplemall-coupon" />
-        <module name="renren-generator" />
-        <module name="simplemall-common" />
+        <module name="simplemall-seckill" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -27,11 +31,15 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="renren-fast" options="-parameters" />
       <module name="renren-generator" options="-parameters" />
+      <module name="simplemall-auth-server" options="-parameters" />
+      <module name="simplemall-cart" options="-parameters" />
       <module name="simplemall-coupon" options="-parameters" />
       <module name="simplemall-gateway" options="-parameters" />
       <module name="simplemall-member" options="-parameters" />
       <module name="simplemall-order" options="-parameters" />
       <module name="simplemall-product" options="-parameters" />
+      <module name="simplemall-search" options="-parameters" />
+      <module name="simplemall-seckill" options="-parameters" />
       <module name="simplemall-third-party" options="-parameters" />
       <module name="simplemall-ware" options="-parameters" />
     </option>

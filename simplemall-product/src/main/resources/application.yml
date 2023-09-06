@@ -1,4 +1,6 @@
 spring:
+  session:
+    store-type: redis
   datasource:
     username: root
     password: root
@@ -10,6 +12,20 @@ spring:
         server-addr: 127.0.0.1:8848
   application:
     name: simplemall-product
+  thymeleaf:
+    cache: false
+  redis:
+    host: 192.168.56.10
+    port: 6379
+  cache:
+    type: redis     #指定缓存类型为redis
+    redis:
+      time-to-live: 3600000     # 指定缓存的数据的存活时间（毫秒为单位）
+      key-prefix: CACHE_        # 设置key的前缀，用来区分和reids其他键不同的.如果制定了前缀就用我们指定的前缀，如果没有就默认使用缓存的名字作为前缀
+      use-key-prefix: true      # 设置是否使用前缀
+      cache-null-values: true   # 是否缓存空值，防止缓存穿透
+#  mvc:
+#    static-path-pattern: /static/**
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -25,3 +41,9 @@ server:
 logging:
   level:
     com.fangw.simplemall: debug
+# 线程池
+simplemall:
+  thread:
+    core-size: 4
+    max-size: 8
+    keep-alive-time: 10

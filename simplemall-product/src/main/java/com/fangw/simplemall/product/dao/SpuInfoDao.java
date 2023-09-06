@@ -1,8 +1,10 @@
 package com.fangw.simplemall.product.dao;
 
-import com.fangw.simplemall.product.entity.SpuInfoEntity;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.fangw.simplemall.product.entity.SpuInfoEntity;
 
 /**
  * spu信息
@@ -13,5 +15,12 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SpuInfoDao extends BaseMapper<SpuInfoEntity> {
-	
+
+    /**
+     * 更新spu状态
+     * 
+     * @param spuId
+     * @param code
+     */
+    void updateSpuStatus(@Param("spuId") Long spuId, @Param("code") int code);
 }

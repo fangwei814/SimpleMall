@@ -1,5 +1,6 @@
 package com.fangw.simplemall.product.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -23,4 +24,6 @@ public interface BrandService extends IService<BrandEntity> {
      * @param brand
      */
     void updateDetail(BrandEntity brand);
+
+    List<BrandEntity> getBrandsByIds(List<Long> brandIds);
 }

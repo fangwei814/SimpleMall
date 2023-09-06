@@ -20,5 +20,9 @@
         <module>renren-generator</module>
         <module>simplemall-gateway</module>
         <module>simplemall-third-party</module>
+        <module>simplemall-search</module>
+        <module>simplemall-auth-server</module>
+        <module>simplemall-cart</module>
+        <module>simplemall-seckill</module>
     </modules>
 </project>

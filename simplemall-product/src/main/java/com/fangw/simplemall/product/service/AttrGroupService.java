@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.product.entity.AttrGroupEntity;
 import com.fangw.simplemall.product.vo.AttrGroupWithAttrsVo;
+import com.fangw.simplemall.product.vo.SpuItemAttrGroupVo;
 
 /**
  * 属性分组
@@ -28,4 +29,13 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      * @return
      */
     List<AttrGroupWithAttrsVo> getAttrGroupWithAttrsByCatelogId(Long catelogId);
+
+    /**
+     * 查处当前spuId对应的所有属性分组信息 以及 当前分组下的所有属性对应的值
+     * 
+     * @param spuId
+     * @param catalogId
+     * @return
+     */
+    List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId);
 }

@@ -1,10 +1,10 @@
 package com.fangw.simplemall.member.service;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.member.entity.MemberLevelEntity;
-
-import java.util.Map;
 
 /**
  * 会员等级
@@ -16,5 +16,11 @@ import java.util.Map;
 public interface MemberLevelService extends IService<MemberLevelEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    /**
+     * 获取默认等级
+     * 
+     * @return
+     */
+    MemberLevelEntity getDefaultLevel();
+}
