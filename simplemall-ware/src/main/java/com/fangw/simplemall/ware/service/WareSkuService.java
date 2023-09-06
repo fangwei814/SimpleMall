@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fangw.common.to.OrderTo;
 import com.fangw.common.to.mq.StockLockedTo;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.vo.SkuHasStockVo;
@@ -54,4 +55,11 @@ public interface WareSkuService extends IService<WareSkuEntity> {
      *
      */
     void unlockStock(StockLockedTo to);
+
+    /**
+     * 防止订单服务卡顿，导致订单状态一直修改不了，库存消息优先到期。查订单状态肯定是新建状态，什么都不做就走了 导致卡顿的订单，永远不能解锁库存
+     * 
+     * @param orderTo
+     */
+    void unlockStock(OrderTo orderTo);
 }

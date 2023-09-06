@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.exception.NoStockException;
+import com.fangw.common.to.OrderTo;
 import com.fangw.common.to.mq.StockDetailTo;
 import com.fangw.common.to.mq.StockLockedTo;
 import com.fangw.common.utils.PageUtils;
@@ -224,6 +225,22 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             }
         } else {
             // 无需解锁
+        }
+    }
+
+    @Override
+    public void unlockStock(OrderTo orderTo) {
+        String orderSn = orderTo.getOrderSn();
+        // 查一下最新库存的状态，防止重复解锁库存
+        WareOrderTaskEntity task = orderTaskService.getOrderTeskByOrderSn(orderSn);
+        Long taskId = task.getId();
+        // 按照工作单找到所有 没有解锁的库存，进行解锁
+        List<WareOrderTaskDetailEntity> entities =
+            orderTaskDetailService.list(new LambdaQueryWrapper<WareOrderTaskDetailEntity>()
+                .eq(WareOrderTaskDetailEntity::getTaskId, taskId).eq(WareOrderTaskDetailEntity::getLockStatus, 1));
+        // 进行解锁
+        for (WareOrderTaskDetailEntity entity : entities) {
+            unLockStock(entity.getSkuId(), entity.getWareId(), entity.getSkuNum(), entity.getId());
         }
     }
 
