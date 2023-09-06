@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.fangw.common.constant.AuthServerConstant;
@@ -26,6 +27,12 @@ public class LoginUserInterceptor implements HandlerInterceptor {
      */
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
         throws Exception {
+        String uri = request.getRequestURI();
+        boolean match = new AntPathMatcher().match("/order/order/status/**", uri);
+        if (match) {
+            return true;
+        }
+
         MemberRespVo attribute = (MemberRespVo)request.getSession().getAttribute(AuthServerConstant.LOGIN_USER);
         if (Objects.nonNull(attribute)) {
             // 登录放行

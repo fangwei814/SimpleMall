@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fangw.common.to.mq.StockLockedTo;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.vo.SkuHasStockVo;
 import com.fangw.simplemall.ware.entity.WareSkuEntity;
@@ -44,4 +45,13 @@ public interface WareSkuService extends IService<WareSkuEntity> {
      * @return (rollbackFor = NoStockException.class) 默认只要是运行时异常都会回滚
      */
     Boolean orderLockStock(WareSkuLockVo vo);
+
+    /**
+     * 1、库存自动解锁 下订单成功，库存锁定成功，接下来的业务调用失败，导致订单回滚。之前锁定的库存就要自动解锁 2、订单失败 锁库存失败，则库存回滚了，这种情况无需解锁
+     * 如何判断库存是否锁定失败呢？查询数据库关于这个订单的锁库存消息即可 自动ACK机制：只要解决库存的消息失败，一定要告诉服务器解锁是失败的。启动手动ACK机制
+     * 
+     * @param to
+     *
+     */
+    void unlockStock(StockLockedTo to);
 }
