@@ -1,0 +1,24 @@
+spring:
+  rabbitmq:
+    host: 192.168.56.10
+    virtual-host: /
+    username: guest
+    password: guest
+    listener:
+      simple:
+        acknowledge-mode: manual
+  redis:
+    host: 192.168.56.10
+    port: 6379
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: simplemall-seckill
+
+server:
+  port: 50000
+logging:
+  level:
+    com.fangw.simplemall: debug

@@ -20,6 +20,7 @@
         <module name="renren-fast" />
         <module name="simplemall-gateway" />
         <module name="simplemall-third-party" />
+        <module name="simplemall-seckill" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -38,6 +39,7 @@
       <module name="simplemall-order" options="-parameters" />
       <module name="simplemall-product" options="-parameters" />
       <module name="simplemall-search" options="-parameters" />
+      <module name="simplemall-seckill" options="-parameters" />
       <module name="simplemall-third-party" options="-parameters" />
       <module name="simplemall-ware" options="-parameters" />
     </option>

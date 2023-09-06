@@ -23,5 +23,6 @@
         <module>simplemall-search</module>
         <module>simplemall-auth-server</module>
         <module>simplemall-cart</module>
+        <module>simplemall-seckill</module>
     </modules>
 </project>
