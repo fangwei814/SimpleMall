@@ -1,8 +1,6 @@
 package com.fangw.simplemall.seckill.service.impl;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.redisson.api.RSemaphore;
@@ -50,7 +48,8 @@ public class SeckillServiceImpl implements SeckillService {
             String key = SESSION_CACHE_PREFIX + startTime + "_" + endTime;
             Boolean flag = redisTemplate.hasKey(key);
             if (Objects.nonNull(flag) && !flag) {
-                List<String> collect = session.getRelationSkus().stream().map(item -> item.getSkuId().toString())
+                List<String> collect = session.getRelationSkus().stream()
+                    .map(item -> item.getPromotionSessionId() + "_" + item.getSkuId().toString())
                     .collect(Collectors.toList());
                 // 缓存活动信息
                 redisTemplate.opsForList().leftPushAll(key, collect);
@@ -118,5 +117,36 @@ public class SeckillServiceImpl implements SeckillService {
             // 2)、缓存活动的关联商品信息
             saveSessionSkuInfo(sessionData);
         }
+    }
+
+    @Override
+    public List<SeckillSkuRedisTo> getCurrentSeckillSkus() {
+        // 1.确定秒杀场次
+        // 用当前时间来判断
+        long time = new Date().getTime();
+        Set<String> keys = redisTemplate.keys(SESSION_CACHE_PREFIX + "*");
+        for (String key : keys) {
+            String replace = key.replace(SESSION_CACHE_PREFIX, "");
+            String[] s = replace.split("_");
+            long start = Long.parseLong(s[0]);
+            long end = Long.parseLong(s[1]);
+
+            if (time >= start && time < end) {
+                // 2.获取商品信息
+                List<String> range = redisTemplate.opsForList().range(key, -100, 100);
+                BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+                List<String> list = hashOps.multiGet(range);
+                if (Objects.nonNull(list)) {
+                    List<SeckillSkuRedisTo> collect = list.stream().map(item -> {
+                        SeckillSkuRedisTo seckillSkuRedisTo = JSON.parseObject((String)item, SeckillSkuRedisTo.class);
+                        seckillSkuRedisTo.setRandomCode(null);
+                        return seckillSkuRedisTo;
+                    }).collect(Collectors.toList());
+                    return collect;
+                }
+                break;
+            }
+        }
+        return null;
     }
 }

@@ -64,6 +64,11 @@ spring:
           uri: lb://simplemall-order
           predicates:
             - Host=order.simplemall.com
+        # 秒杀域名路由
+        - id: simplemall_seckill_route
+          uri: lb://simplemall-seckill
+          predicates:
+            - Host=seckill.simplemall.com
         # 主页、商品详情域名路由
         - id: simplemall_host_route
           uri: lb://simplemall-product
