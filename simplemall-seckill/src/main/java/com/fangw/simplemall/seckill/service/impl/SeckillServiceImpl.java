@@ -1,6 +1,7 @@
 package com.fangw.simplemall.seckill.service.impl;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.redisson.api.RSemaphore;
@@ -139,12 +140,41 @@ public class SeckillServiceImpl implements SeckillService {
                 if (Objects.nonNull(list)) {
                     List<SeckillSkuRedisTo> collect = list.stream().map(item -> {
                         SeckillSkuRedisTo seckillSkuRedisTo = JSON.parseObject((String)item, SeckillSkuRedisTo.class);
-                        seckillSkuRedisTo.setRandomCode(null);
+                        // seckillSkuRedisTo.setRandomCode(null);
                         return seckillSkuRedisTo;
                     }).collect(Collectors.toList());
                     return collect;
                 }
                 break;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public SeckillSkuRedisTo getSkuSeckillInfo(Long skuId) {
+        // 1.找到所有需要参与秒杀的key
+        BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+
+        Set<String> keys = hashOps.keys();
+        if (Objects.nonNull(keys) && !keys.isEmpty()) {
+            String regx = "\\d_" + skuId;
+            for (String key : keys) {
+                if (Pattern.matches(regx, key)) {
+                    String json = hashOps.get(key);
+                    SeckillSkuRedisTo skuRedisTo = JSON.parseObject(json, SeckillSkuRedisTo.class);
+
+                    long current = new Date().getTime();
+                    Long startTime = skuRedisTo.getStartTime();
+                    Long endTime = skuRedisTo.getEndTime();
+                    if (current >= startTime && current <= endTime) {
+                        // 在秒杀活动时
+                    } else {
+                        // 不在秒杀活动时不应该传递随机码
+                        skuRedisTo.setRandomCode("");
+                    }
+                    return skuRedisTo;
+                }
             }
         }
         return null;
