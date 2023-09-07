@@ -25,4 +25,17 @@ public interface SeckillService {
      * @return
      */
     SeckillSkuRedisTo getSkuSeckillInfo(Long skuId);
+
+    /**
+     * 秒杀处理，发送消息给MQ
+     * 
+     * @param killId
+     *            存放的key
+     * @param key
+     *            随机码
+     * @param num
+     *            购买数量
+     * @return 生成的订单号
+     */
+    String kill(String killId, String key, Integer num);
 }

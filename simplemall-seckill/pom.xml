@@ -58,6 +58,13 @@
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
+        <!--模板引擎 thymeleaf-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+
         <dependency>
             <groupId>com.fangw.simplemall</groupId>
             <artifactId>simplemall-common</artifactId>

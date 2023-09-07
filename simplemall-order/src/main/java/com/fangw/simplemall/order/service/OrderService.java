@@ -5,6 +5,7 @@ import java.util.Map;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.simplemall.order.entity.OrderEntity;
+import com.fangw.simplemall.order.to.SeckillOrderTo;
 import com.fangw.simplemall.order.vo.OrderConfirmVo;
 import com.fangw.simplemall.order.vo.OrderSubmitVo;
 import com.fangw.simplemall.order.vo.SubmitOrderResponseVo;
@@ -49,4 +50,11 @@ public interface OrderService extends IService<OrderEntity> {
      * @param entity
      */
     void closeOrder(OrderEntity entity);
+
+    /**
+     * 创建秒杀订单
+     * 
+     * @param seckillOrder
+     */
+    void createSeckillOrder(SeckillOrderTo seckillOrder);
 }
