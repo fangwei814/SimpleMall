@@ -2,6 +2,13 @@ spring:
   cloud:
     gateway:
       routes:
+        # 优惠服务路由
+        - id: coupon_route
+          uri: lb://simplemall-coupon
+          predicates:
+            - Path=/api/coupon/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
         # 商品服务路由
         - id: product_route
           uri: lb://simplemall-product
