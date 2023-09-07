@@ -26,6 +26,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.constant.OrderConstant;
 import com.fangw.common.exception.NoStockException;
 import com.fangw.common.to.OrderTo;
+import com.fangw.common.to.mq.SeckillOrderTo;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.Query;
 import com.fangw.common.utils.R;
@@ -220,6 +221,29 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             // 3、发给MQ一个
             rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other", orderEntity);
         }
+    }
+
+    @Override
+    public void createSeckillOrder(SeckillOrderTo seckillOrder) {
+        // 保存订单信息
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderSn(seckillOrder.getOrderSn());
+        orderEntity.setMemberId(seckillOrder.getMemberId());
+
+        orderEntity.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
+        BigDecimal multiply = seckillOrder.getSeckillPrice().multiply(new BigDecimal("" + seckillOrder.getNum()));
+        orderEntity.setPayAmount(multiply);
+
+        this.save(orderEntity);
+
+        // 保存订单项信息
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setOrderSn(seckillOrder.getOrderSn());
+        orderItemEntity.setRealAmount(multiply);
+        orderItemEntity.setSkuQuantity(seckillOrder.getNum());
+        // todo:获取当前SKU的详细信息进行设置
+
+        orderItemService.save(orderItemEntity);
     }
 
     /**

@@ -26,7 +26,7 @@ public class MyRabbitConfig {
     // }
 
     /**
-     * 使用JSON序列化机制，进行消息转换
+     * 使用JSON序列化机制，进行消息转换 https://blog.csdn.net/qq_36565692/article/details/124554505
      *
      * @return
      */
