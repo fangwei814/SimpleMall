@@ -153,6 +153,19 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!--Sentinel 服务熔断、降级、限流-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+        <!--统计审核信息-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
