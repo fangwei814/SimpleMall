@@ -26,6 +26,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fangw.common.constant.OrderConstant;
 import com.fangw.common.exception.NoStockException;
 import com.fangw.common.to.OrderTo;
+import com.fangw.common.to.mq.SeckillOrderTo;
 import com.fangw.common.utils.PageUtils;
 import com.fangw.common.utils.Query;
 import com.fangw.common.utils.R;
@@ -42,7 +43,6 @@ import com.fangw.simplemall.order.interceptor.LoginUserInterceptor;
 import com.fangw.simplemall.order.service.OrderItemService;
 import com.fangw.simplemall.order.service.OrderService;
 import com.fangw.simplemall.order.to.OrderCreateTo;
-import com.fangw.simplemall.order.to.SeckillOrderTo;
 import com.fangw.simplemall.order.vo.*;
 
 @Service("orderService")

@@ -8,8 +8,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fangw.common.to.mq.SeckillOrderTo;
 import com.fangw.simplemall.order.service.OrderService;
-import com.fangw.simplemall.order.to.SeckillOrderTo;
 import com.rabbitmq.client.Channel;
 
 import lombok.extern.slf4j.Slf4j;

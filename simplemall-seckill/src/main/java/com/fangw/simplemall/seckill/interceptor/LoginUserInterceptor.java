@@ -30,19 +30,18 @@ public class LoginUserInterceptor implements HandlerInterceptor {
         String uri = request.getRequestURI();
         boolean match = new AntPathMatcher().match("/kill", uri);
         if (match) {
-            return true;
+            MemberRespVo attribute = (MemberRespVo)request.getSession().getAttribute(AuthServerConstant.LOGIN_USER);
+            if (Objects.nonNull(attribute)) {
+                // 登录放行
+                loginUser.set(attribute);
+                return true;
+            } else {
+                // 未登录要求登录
+                request.getSession().setAttribute("msg", "请先登录");
+                response.sendRedirect("http://auth.simplemall.com/login.html");
+                return false;
+            }
         }
-
-        MemberRespVo attribute = (MemberRespVo)request.getSession().getAttribute(AuthServerConstant.LOGIN_USER);
-        if (Objects.nonNull(attribute)) {
-            // 登录放行
-            loginUser.set(attribute);
-            return true;
-        } else {
-            // 未登录要求登录
-            request.getSession().setAttribute("msg", "请先登录");
-            response.sendRedirect("http://auth.simplemall.com/login.html");
-            return false;
-        }
+        return true;
     }
 }

@@ -7,6 +7,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MyMQConfig {
+    // @RabbitListener(queues = "order.seckill.order.queue")
+    // public void listener(SeckillOrderTo entity, Channel channel, Message message) throws IOException {
+    // System.out.println("收到");
+    // }
+
     @Bean
     public Queue orderSeckillOrderQueue() {
         return new Queue("order.seckill.order.queue", true, false, false);

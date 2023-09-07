@@ -1,4 +1,4 @@
-package com.fangw.simplemall.seckill.to;
+package com.fangw.common.to.mq;
 
 import java.math.BigDecimal;
 
